@@ -1,0 +1,127 @@
+{% extends 'chitapp/layouts/main.html' %}
+
+{% block title %}
+Chit Fund Project | User Registration
+{% endblock title %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+    body {
+        background: linear-gradient(135deg, #74ebd5, #acb6e5);
+        font-family: Arial, sans-serif; 
+        padding: 200px;
+        text-align: center;
+        font-size: 18px;
+    }
+
+    .form-container {
+        max-width: 600px;
+        background: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        margin: auto;
+    }
+
+    .form-title {
+        font-size: 26px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        text-align: left;
+        margin-bottom: 5px;
+    }
+
+    input[type="text"], input[type="email"], input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    button {
+        width: 48%;
+        padding: 12px;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    button[type="submit"] {
+        background-color: #0a0a0a;
+        color: white;
+    }
+    .cancel-btn {
+        background-color: #080808;
+        color: white;
+    }
+    .error-text {
+        color: #dc3545;
+        font-size: 14px;
+        text-align: left;
+    }
+
+    p {
+        margin-top: 15px;
+    }
+
+    p a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    p a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<h2 class="form-title">New User Registration</h2>
+
+<div class="form-container">
+    <form method="post">
+        {% csrf_token %}
+        
+        <label for="username">User Name</label>
+        {{ form.username }}
+        {% if form.errors.username %}
+        <p class="error-text">{{ form.errors.username }}</p>
+        {% endif %}
+
+        <label for="email">User Email</label>
+        {{ form.email }}
+        {% if form.errors.email %}
+        <p class="error-text">{{ form.errors.email }}</p>
+        {% endif %}
+
+        <label for="password1">Password</label>
+        {{ form.password1 }}
+        {% if form.errors.password1 %}
+        <p class="error-text">{{ form.errors.password1 }}</p>
+        {% endif %}
+
+        <label for="password2">Confirm Password</label>
+        {{ form.password2 }}
+        {% if form.errors.password2 %}
+        <p class="error-text">{{ form.errors.password2 }}</p>
+        {% endif %}
+
+        <div class="btn-container">
+            <button type="submit">Register</button>
+            <a href="{% url 'index' %}"><button type="button" class="cancel-btn">Cancel</button></a>
+        </div>
+    </form>
+
+    <p>Already a user? <a href="{% url 'login' %}">Login Now</a></p>
+</div>
+
+{% endblock content %}

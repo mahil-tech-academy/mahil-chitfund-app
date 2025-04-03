@@ -1,0 +1,117 @@
+{% extends 'chitapp/layouts/main.html' %}
+
+
+{% block title %}
+Chit Fund Project | Admin Access
+{% endblock title %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            font-family: Arial, sans-serif;
+            padding: 200px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .form-container {
+            max-width: 600px;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            margin: auto;
+        }
+
+        .form-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: 400;
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .btn {
+            width: 48%;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            color: white;
+        }
+
+        .btn[type="submit"] {
+            background-color: #0c0c0c;
+        }
+
+        .back-btn {
+            width: 48%;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #0a0a0a;
+            color: white;
+        }
+
+        nav {
+            background-color: black;
+            padding: 15px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container mt-5">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="form-container">
+            <h2 class="form-title">Admin Access</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="username" class="form-label">Enter Username</label>
+                    <input type="text" name="username" id="username" class="form-control" required>
+                </div>
+                <div class="btn-container">
+                    <button type="submit" class="btn">Make Admin</button>
+                    <button type="submit" name="back" class="back-btn">Back</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</body>
+</html>
+{% endblock content %}

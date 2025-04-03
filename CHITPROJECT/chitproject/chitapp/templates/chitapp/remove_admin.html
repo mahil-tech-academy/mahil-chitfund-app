@@ -1,0 +1,117 @@
+{% extends 'chitapp/layouts/main.html' %}
+
+{% block title %}
+Chit Fund Project | Remove Admin
+{% endblock title %}
+
+{% block content %}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #74ebd5, #acb6e5);
+        font-family: Arial, sans-serif;
+        padding: 200px;
+        text-align: center;
+        font-size: 18px;
+    }
+
+    .form-container {
+        max-width: 600px;
+        background: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        margin: auto;
+    }
+
+    .form-title {
+        font-size: 26px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: center;
+    }
+    
+
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .alert-warning {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .btn-container {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .btn-danger {
+        background-color: #050505;
+        color: white;
+        padding: 12px;
+        width: 100%;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+</style>
+
+<div class="form-container">
+    <h2 class="form-title">Remove Admin</h2>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message-box {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% else %}alert-warning{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <th>Enter Admin Username</th>
+            </tr>
+            <tr>
+                <td>
+                    <input type="text" name="username" id="username" placeholder="Enter Username" required>
+                </td>
+            </tr>
+        </table>
+        <div class="btn-container">
+            <button type="submit" class="btn-danger">Remove Admin</button>
+        </div>
+    </form>
+</div>
+
+{% endblock content %}

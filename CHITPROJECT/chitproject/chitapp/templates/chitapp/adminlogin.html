@@ -1,0 +1,26 @@
+<nav style="background-color: black; padding: 15px;">
+    <div style="color: white; font-size: 20px; text-align: center;">
+        Admin Login
+    </div>
+</nav>
+
+<div class="container" style="display: flex; justify-content: center; align-items: center; min-height: 40vh;">
+    <section class="py-4">
+        <div style="width: 280px; padding: 30px; border: 1px solid #ddd; border-radius: 8px;">
+            <form method="post">
+                {% csrf_token %}
+                <div style="margin-bottom: 20px; text-align: center;">
+                    <label for="username" class="form-label" style="font-size: 20px;">User Name</label>
+                    <input type="text" name="username" id="username" class="form-control" placeholder="Enter User Name" style="width: 150px; height: 30px;">
+                </div>
+                <div style="margin-bottom: 20px; text-align: center;">
+                    <label for="password" class="form-label" style="font-size: 20px; ">Password</label>
+                    <input type="password" name="password" id="password" class="form-control" placeholder="Enter Password" style="width: 150px; height: 30px;">
+                </div>
+                <div style="text-align: center;">
+                    <button type="submit" style="padding: 8px 20px; background-color: blue; color: white; border: none; border-radius: 5px;">Login</button>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
