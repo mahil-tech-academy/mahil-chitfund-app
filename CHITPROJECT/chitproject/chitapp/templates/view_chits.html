@@ -1,0 +1,233 @@
+{% extends 'chitapp/layouts/main.html' %}
+
+{% block title %}
+Chit Fund Project | View Chits
+{% endblock title %}
+
+{% block content %}
+<title>View Details</title>
+
+
+<br>
+<style>
+    body {
+        background: linear-gradient(135deg, #74ebd5, #acb6e5);
+        font-family: Arial, sans-serif; 
+        padding: 100px;
+        text-align: center;
+        font-size: 18px;
+    }
+
+    .form-container {
+        max-width: 700px;
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        margin: auto;
+        text-align: left;
+        font-weight: 300;
+    }
+    .form-title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+    label {
+        font-weight: 300;
+        margin-bottom: 5px;
+    }
+
+    input[type="text"], input[type="number"], textarea, select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+    }
+
+    button {
+        width: 40%;
+        padding: 12px;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        
+    }
+
+    button[type="submit"] {
+        background-color: #0c0c0c;
+        color: white;
+    }
+
+    button[type="button"] {
+        background-color: #838282;
+        color: white;
+    }
+
+    .weeks-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        justify-content: center;
+    }
+
+    .weeks-container label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 14px;
+    }
+
+    .summary-container {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+        
+    }
+
+</style>
+
+
+<div class="form-container">
+    <h2 class="form-title">View Chit Details</h2>
+    <form method="GET">
+        <label>Chit Type:</label>
+        <input type="text" name="chit_Type" placeholder="Enter Chit Type" value="{{ request.GET.chit_Type }}">
+
+        <label>Chit Number:</label>
+        <input type="text" name="chit_Number" placeholder="Enter Chit Number" value="{{ request.GET.chit_Number }}">
+
+        <button type="submit">Search</button>
+    </form>
+</div>
+
+{% if chit %}
+<div class="form-container">
+    <h3>Chit Details</h3>
+    <br>
+    <p><strong>Chit Number:</strong> {{ chit.chit_Number }}</p>
+    <p><strong>Chit Id:</strong> {{ chit.id }}</p>
+    <p><strong>Name:</strong> {{ chit.name }}</p>
+    <p><strong>Phone Number:</strong> {{ chit.phoneNumber }}</p>
+    <p><strong>Address:</strong> {{ chit.address }}</p>
+    <p><strong>Village:</strong> {{ chit.village }}</p>
+    <p><strong>No Of Chits:</strong> {{ chit.num_Of_Chits }}</p>
+
+    <a href="{% url 'edit_chit' chit.id %}"><button type="button">Edit</button></a>
+
+    <h3>52 Weeks Payment</h3>
+    <br>
+    <p><strong>Total Paid Weeks:</strong> {{ total_paid_week }}</p>
+
+    <form method="POST" action="{% url 'handle_payment' chit.id %}">
+        {% csrf_token %}
+            
+        <label>Enter Number of Weeks:</label>
+        <input type="number" id="num_weeks" min="1" max="52" oninput="selectWeeks()">
+    
+        <div class="weeks-container">
+            {% for week in weeks %}
+                <label>
+                    <input type="checkbox" class="week-checkbox" name="selected_weeks" value="{{ week }}" 
+                    {% if week <= total_paid_week %} disabled checked {% endif %}>
+                    Week {{ week }}
+                </label>
+            {% endfor %}
+        </div>
+    
+        <div class="summary-container">
+            <h3>Payment View Details</h3>
+    
+            <label>Selected Weeks:</label>
+            <input type="text" id="selected_weeks_count" name="payment_weeks" readonly>
+    
+            <label>Amount per Week:</label>
+            <input type="number" name="amount_per_week" id="amount_per_week" value="{{ chit_amount }}" readonly>
+    
+            <label>Overdue Fees:</label>
+            <input type="number" name="overdue_fees" id="overdue_fees">
+    
+            <label>Total Amount:</label>
+            <input type="text" id="total_amount" readonly>
+    
+            <label>Cash Received:</label>
+            <input type="number" name="cash_received" id="cash_received" required>
+    
+            <label>Balance:</label>
+            <input type="text" id="balance" readonly>
+    
+            <button type="submit" id="confirm_payment" disabled>Confirm Payment</button>
+        </div>
+    </form>
+
+    {% if payment_summary %}
+    <div class="summary-container">
+        <h3>Payment Summary</h3>
+        <p><strong>Weeks Paid:</strong> {{ payment_summary.num_selected_weeks }}</p>
+        <p><strong>Total Amount:</strong> ₹{{ payment_summary.total_amount }}</p>
+        <p><strong>Cash Received:</strong> ₹{{ payment_summary.cash_received }}</p>
+        <p><strong>Balance:</strong> ₹{{ payment_summary.balance }}</p>
+    </div>
+    {% endif %}
+</div>
+
+    <script>
+        function selectWeeks() {
+        let numWeeks = parseInt(document.getElementById("num_weeks").value);
+        let checkboxes = document.querySelectorAll(".week-checkbox");
+        let selectedCount = 0;
+
+        checkboxes.forEach((checkbox) => {
+            if (!checkbox.disabled) {
+                checkbox.checked = false; 
+            }
+        });
+
+        let count = 0;
+        for (let checkbox of checkboxes) {
+            if (!checkbox.disabled && count < numWeeks) {
+                checkbox.checked = true;
+                count++;
+            }
+        }
+
+        document.getElementById("selected_weeks_count").value = count;
+        calculateTotal();
+    }
+
+        function calculateTotal() {
+            let numWeeks = parseInt(document.getElementById("selected_weeks_count").value) || 0;
+            let amountPerWeek = parseFloat(document.getElementById("amount_per_week").value) || 0;
+            let overdueFees = parseFloat(document.getElementById("overdue_fees").value) || 0;
+            let cashReceived = parseFloat(document.getElementById("cash_received").value) || 0;
+
+            let totalAmount = numWeeks * amountPerWeek;
+            document.getElementById("total_amount").value = totalAmount;
+            document.getElementById("balance").value = totalAmount - cashReceived;
+
+            if(cashReceived && cashReceived < totalAmount){
+                document.getElementById("message").innerText="Amount is less than total amount.Please Check.."
+                document.getElementById("message").style.color="red";
+                document.getElementById("confirm_payment").disabled=true;
+            }else{
+                document.getElementById("message").innerText="";
+
+                if(cashReceived>=totalAmount){
+                    document.getElementById("confirm_payment").disabled=false;
+                }
+            }
+        }
+        
+        document.getElementById("num_weeks").addEventListener("input", selectWeeks);
+        document.getElementById("overdue_fees").addEventListener("input", calculateTotal);
+        document.getElementById("cash_received").addEventListener("input", calculateTotal);
+    </script>
+
+    <div id="message" style="color: red; font-weight: bold;"></div>
+    
+{% endif %}
+{% endblock content %}

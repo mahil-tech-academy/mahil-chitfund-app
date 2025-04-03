@@ -1,0 +1,94 @@
+{% extends 'chitapp/layouts/main.html' %}
+
+
+{% block title %}
+Chit Fund Project | Summary Page
+{% endblock title %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chit Fund Summary</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            font-family: Arial, sans-serif; 
+            padding: 250px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .summary-container {
+            max-width: 90%;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            margin: auto;
+        }
+
+        h2 {
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px auto;
+            
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        th {
+            background: #4facfe;
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="summary-container">
+        <h2>Payment Amount Summary</h2>
+        <table>
+            <tr>
+                <th>Chit Type</th>
+                <th>Chit Amount</th>
+                <th>Total People</th>
+                <th>Total Chits</th>
+                <th>Total People Paid</th>
+                <th>Total Weeks Now</th>
+                <th>Total Paid Weeks</th>
+                <th>Total Amount Paid</th>
+                <th>Expected Paid Total</th>
+                <th>Pending Amount</th>
+                <th>Total Amount</th>
+            </tr>
+            {% for data in summary_data %}
+            <tr>
+                <td>{{ data.chit_type }}</td>
+                <td>₹{{ data.chit_amount }}</td>
+                <td>{{ data.total_people }}</td>
+                <td>{{ data.total_chits }}</td>
+                <td>{{ data.total_people_paid }}</td>
+                <td>{{ data.total_weeks_now }}</td>
+                <td>{{ data.total_paid_weeks }}</td>
+                <td>₹{{ data.total_amount_paid }}</td>
+                <td>₹{{ data.expected_paid_total }}</td>
+                <td style="color: red;">₹{{ data.pending_amount }}</td>
+                <td>₹{{ data.total_amount }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        
+    </div>
+</body>
+</html>
+
+{% endblock content %}

@@ -1,0 +1,95 @@
+{% extends 'chitapp/layouts/main.html' %}
+
+{% block title %}
+Chit Fund Project | Admin Config Page
+{% endblock title %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Config Page</title>
+    <br>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 100px; 
+            text-align: center;
+            font-size: 18px;
+        }
+        
+        .form-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 5px;
+        }
+        .buttons button {
+            padding: 5px 10px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        input {
+            padding: 5px;
+            font-size: 14px;
+        }
+    </style>
+    <script>
+        function addNewRow() {
+            let container = document.getElementById("form-container");
+            let newDiv = document.createElement("div");
+            newDiv.classList.add("form-row");
+            newDiv.innerHTML = `
+                <label>Key:</label>
+                <input type="text" name="key">
+                <label>Value:</label>
+                <input type="text" name="value">
+            `;
+            container.appendChild(newDiv);
+        }
+
+        function showPopupMessage(event) {
+            event.preventDefault();
+            alert("Submitted Successfully!");
+            event.target.submit();
+        }
+        
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Admin Config Page</h2>
+
+        <form method="POST" onsubmit="showPopupMessage(event)">
+            {% csrf_token %}
+            <div id="form-container">
+                {% for config in configs %}
+                <div class="form-row">
+                    <label>Key:</label>
+                    <input type="text" name="key" value="{{ config.key }}" readonly>
+                    <label>Value:</label>
+                    <input type="text" name="value" value="{{ config.value }}" readonly>
+                </div>
+                {% endfor %}
+            </div>
+            <br>
+            <div class="buttons">
+                <button type="button" class="add-btn" onclick="addNewRow()">+</button>
+                <button type="submit" class="submit-btn">Submit</button>
+                <button type="button" class="cancel-btn" onclick="window.location.reload()">Cancel</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+
+{% endblock content %}

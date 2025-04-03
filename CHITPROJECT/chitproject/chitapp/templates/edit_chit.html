@@ -1,0 +1,109 @@
+{% extends 'chitapp/layouts/main.html' %}
+
+{% block title %}
+Chit Fund Project | Edit Page
+{% endblock title %}
+
+{% block content %}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #74ebd5, #acb6e5);
+        font-family: 'Poppins', sans-serif;
+        padding: 100px;
+        text-align: center;
+    }
+
+    .form-container {
+        max-width: 600px;
+        background: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        margin: auto;
+    }
+
+    .form-title {
+        font-size: 26px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    label {
+        
+        display: block;
+        text-align: left;
+        margin-bottom: 5px;
+        
+    }
+
+    input[type="text"], textarea, select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        transition: 0.3s ease-in-out;
+    }
+
+    button {
+        width: 48%;
+        padding: 12px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    button[type="submit"] {
+        background-color: #080808;
+        color: white;
+    }
+
+    button[type="button"] {
+        background-color: #070707;
+        color: white;
+    }
+
+</style>
+
+<div class="form-container">
+    <h2 class="form-title">Edit Chit Details</h2>
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>Chit Type:</label>
+        <input type="text" value="{{ chit.chit_Type }}" disabled>
+        <input type="hidden" name="chit_Type" value="{{ chit.chit_Type }}">
+
+        <label>Chit Number:</label>
+        <input type="text" value="{{ chit.chit_Number }}" disabled>
+        <input type="hidden" name="chit_Number" value="{{ chit.chit_Number }}">
+
+        <label>Name:</label>
+        {{ form.name }}
+
+        <label>Phone Number:</label>
+        {{ form.phoneNumber }}
+
+        <label>Address:</label>
+        {{ form.address }}
+
+        <label>Village:</label>
+        {{ form.village }}
+
+        <label>District:</label>
+        {{ form.district }}
+
+        <label>Number of Chits:</label>
+        <input type="text" value="{{ chit.num_Of_Chits }}" disabled>
+        <input type="hidden" name="num_Of_Chits" value="{{ chit.num_Of_Chits }}">
+
+        <div class="btn-container">
+            <button type="submit">Save</button>
+            <a href="{% url 'view_chits' %}"><button type="button">Cancel</button></a>
+        </div>
+    </form>
+</div>
+
+{% endblock content %}

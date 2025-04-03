@@ -1,0 +1,109 @@
+{% extends 'chitapp/layouts/main.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Summary</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            font-family: Arial, sans-serif;
+            padding: 250px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 1500px;
+            border-radius: 10px;
+        }
+
+        h2 {
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #4facfe;
+            color: white;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        .back-btn {
+            background-color: #0c0c0c;
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Payment Summary</h2>
+        <table>
+            <tr>
+                <th>Chit ID</th>
+                <th>Chit Number</th>
+                <th>Paid Weeks</th>
+                <th>Amount per Week</th>
+                <th>Total Amount</th>
+                <th>Overdue Fees</th>
+                <th>Cash Received</th>
+                <th>Balance</th>
+                <th>Total Paid Week</th>
+                <th>Date & Time</th>
+            </tr>
+            {% for payment in payments %}
+            <tr>
+                <td>{{ payment.chit_id }}</td>
+                <td>{{ payment.chitnumber }}</td>
+                <td>{{ payment.payment_weeks }}</td>
+                <td>{{ payment.amount_per_week }}</td>
+                <td>{{ payment.total_amount }}</td>
+                <td>{{ payment.overdue_fees }}</td>
+                <td>{{ payment.cash_received }}</td>
+                <td>{{ payment.balance }}</td>
+                <td>{{ payment.total_paid_week }}</td>
+                <td>{{ payment.timestamp }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <div class="btn-container">
+            <a href="{% url 'view_chits' %}"><button class="back-btn">Back</button></a>
+        </div>
+    </div>
+</body>
+</html>
+
+{% endblock content %}
