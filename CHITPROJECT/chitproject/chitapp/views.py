@@ -124,7 +124,7 @@ def app_config():
             parts = chit.split('-')
             if len(parts) > 1 and parts[1].isdigit():  
                 config_values[chit] = int(parts[1])  
-                return config_values
+    return config_values
             
 def config_view(request):
     configs = AdminConfig.objects.order_by("id")  
@@ -253,7 +253,8 @@ def edit_chit(request, chit_id):
     return render(request, 'edit_chit.html', {'form': form, 'chit': chit})
 
 def handle_payment(request, chit_id):
-    app_config()
+    
+    config_values = app_config()
 
     chit = get_object_or_404(ChitRegistration, id=chit_id)
 
@@ -267,7 +268,6 @@ def handle_payment(request, chit_id):
         cash_received = int(request.POST.get("cash_received", "0") or 0)
         amount_per_week = config_values.get(chit.chit_Type, 0) * chit.num_Of_Chits
         
- 
 
         total_amount = (payment_weeks * amount_per_week) + overdue_fees
         balance = cash_received - total_amount
@@ -322,6 +322,8 @@ def summary_page(request):
     summary_data = []
     
     for chit_type, amount_per_week in config_values.items():
+        if chit_type == "CHIT_TYPE":
+            continue
         chits = ChitRegistration.objects.filter(chit_Type=chit_type)
         total_people = chits.count()
 
@@ -371,3 +373,4 @@ def summary_page(request):
         })
     
     return render(request, 'summary.html', {'summary_data': summary_data})
+
