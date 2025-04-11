@@ -116,12 +116,16 @@ def app_config():
     chit_type_entry = AdminConfig.objects.filter(key="CHIT_TYPE").first()
     
     if chit_type_entry:
+
+        config_values["CHIT_TYPE"] = chit_type_entry.value
+
         chit_types = chit_type_entry.value.split(',')  
         for chit in chit_types:
             parts = chit.split('-')
             if len(parts) > 1 and parts[1].isdigit():  
                 config_values[chit] = int(parts[1])  
-
+                return config_values
+            
 def config_view(request):
     configs = AdminConfig.objects.order_by("id")  
 
@@ -189,6 +193,8 @@ def success(request):
 
 def view_chits(request):
 
+    config_values = app_config() 
+
     app_config()
 
     chit = None
@@ -198,6 +204,8 @@ def view_chits(request):
 
     chit_Type = request.GET.get("chit_Type")
     chit_Number = request.GET.get("chit_Number")
+
+    chit_type_list = config_values.get('CHIT_TYPE').split(',')
 
     if chit_Type and chit_Number:
 
@@ -222,6 +230,8 @@ def view_chits(request):
         'total_paid_week': total_paid_week,
         'paid_weeks': paid_weeks,
         'weeks': range(1, 53),
+        'chit_type_list': chit_type_list, 
+        'selected_chit_type': chit_Type,  
     })
 
 
@@ -256,9 +266,8 @@ def handle_payment(request, chit_id):
         overdue_fees = int(request.POST.get("overdue_fees", "0") or 0)
         cash_received = int(request.POST.get("cash_received", "0") or 0)
         amount_per_week = config_values.get(chit.chit_Type, 0) * chit.num_Of_Chits
-    
-
-        num_of_chits = chit.num_Of_Chits if chit.num_Of_Chits else 1 
+        
+ 
 
         total_amount = (payment_weeks * amount_per_week) + overdue_fees
         balance = cash_received - total_amount
@@ -276,7 +285,7 @@ def handle_payment(request, chit_id):
             balance=balance,
             total_paid_week=new_total_paid_week,
             timestamp=datetime.now(),
-            num_Of_Chits=num_of_chits,
+            
         )
 
         return redirect('payment_summary', chit_id=chit_id)  
