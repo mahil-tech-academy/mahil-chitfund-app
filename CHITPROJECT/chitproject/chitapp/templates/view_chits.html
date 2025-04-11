@@ -96,7 +96,12 @@ Chit Fund Project | View Chits
     <h2 class="form-title">View Chit Details</h2>
     <form method="GET">
         <label>Chit Type:</label>
-        <input type="text" name="chit_Type" placeholder="Enter Chit Type" value="{{ request.GET.chit_Type }}">
+        <select name="chit_Type">
+            <option value="">-- Select Chit Type --</option>
+            {% for chit_type in chit_type_list %}
+            <option value="{{ chit_type }}" >{{ chit_type }}</option>
+            {% endfor %}
+        </select>
 
         <label>Chit Number:</label>
         <input type="text" name="chit_Number" placeholder="Enter Chit Number" value="{{ request.GET.chit_Number }}">
