@@ -125,7 +125,7 @@ def app_config():
             if len(parts) > 1 and parts[1].isdigit():  
                 config_values[chit] = int(parts[1])  
     return config_values
-            
+
 def config_view(request):
     configs = AdminConfig.objects.order_by("id")  
 
@@ -135,20 +135,21 @@ def config_view(request):
             value_name = f"value_{config.id}"
             
             if key_name in request.POST and value_name in request.POST:
-                config.key = request.POST[key_name]
-                config.value = request.POST[value_name]
+                config.key = request.POST[key_name].strip()
+                config.value = request.POST[value_name].strip()
                 config.save()
 
         return redirect("config_view")  
     return render(request, "config_view.html", {"configs": configs})
+
 
 def admin_config_view(request):
     configs = AdminConfig.objects.order_by("id")
     form = AdminConfigForm()
 
     if request.method == 'POST':
-        key_list = request.POST.getlist('key')
-        value_list = request.POST.getlist('value')
+        key_list = request.POST.getlist('key').strip()
+        value_list = request.POST.getlist('value').strip()
 
         for key, value in zip(key_list, value_list):
             if key and value and not AdminConfig.objects.filter(key=key, value=value).exists():
@@ -164,14 +165,35 @@ def chit_register():
     register_values = {
         row['chit_Type']: row['max'] if row['max'] else 0
         for row in ChitRegistration.objects.values('chit_Type').annotate(max=Max('chit_Number'))
-    } 
+    }
+
+
+def get_chit_number_firsttime():
+    chit_type_with_number = {}
+    chit_type_as_list = AdminConfig.objects.filter(key="CHIT_TYPE").values_list("value", flat=True).first().split(",")
+    print(chit_type_as_list)
+    for item in chit_type_as_list:
+        print(item)
+        prefix = item.split("-")[0]
+        chit_type_with_number[item] = prefix+"0000"
+    return chit_type_with_number
 
 def register_chit(request):
 
     chit_register()
+    global register_values
+
+    if not register_values:
+        register_values = get_chit_number_firsttime()
     
-    chitvalue = AdminConfig.objects.filter(key="CHIT_TYPE").values_list("value", flat=True).first()
-    chit_type = chitvalue.split(",") 
+    first_time_values = get_chit_number_firsttime()
+    for key in first_time_values.keys():
+        if key not in register_values:
+            register_values[key] = first_time_values[key]
+ 
+    register_values = dict(sorted(register_values.items(), key=lambda item: item[1][-3:]))
+
+
     chit_type = register_values
 
     if request.method == "POST":
@@ -195,20 +217,36 @@ def view_chits(request):
 
     config_values = app_config() 
 
-    app_config()
-
     chit = None
     chit_amount = 0
     total_paid_week = 0
     paid_weeks = []
+    ongoing_week = 0  
 
     chit_Type = request.GET.get("chit_Type")
     chit_Number = request.GET.get("chit_Number")
 
     chit_type_list = config_values.get('CHIT_TYPE').split(',')
 
-    if chit_Type and chit_Number:
+    
+    date_entry = AdminConfig.objects.filter(key="START_DATE").first()
+    start_date = None
 
+    if date_entry:
+        try:
+            start_date = datetime.strptime(date_entry.value, "%d/%m/%Y").date()
+        except ValueError:
+            start_date = None  
+
+    if start_date:
+        
+        day_last_sunday = (start_date.weekday() + 1) % 7
+        last_sunday = start_date - timedelta(days=day_last_sunday)
+        ongoing_week = (date.today() - last_sunday).days // 7
+    else:
+        ongoing_week = 0
+
+    if chit_Type and chit_Number:
         chit = ChitRegistration.objects.filter(chit_Type=chit_Type, chit_Number=chit_Number).first()
 
         if chit:
@@ -226,12 +264,13 @@ def view_chits(request):
 
     return render(request, 'view_chits.html', {
         'chit': chit,
-        'chit_amount': chit_amount,  
+        'chit_amount': chit_amount,
         'total_paid_week': total_paid_week,
         'paid_weeks': paid_weeks,
         'weeks': range(1, 53),
-        'chit_type_list': chit_type_list, 
-        'selected_chit_type': chit_Type,  
+        'chit_type_list': chit_type_list,
+        'selected_chit_type': chit_Type,
+        'ongoing_week': ongoing_week,  
     })
 
 
@@ -253,8 +292,7 @@ def edit_chit(request, chit_id):
     return render(request, 'edit_chit.html', {'form': form, 'chit': chit})
 
 def handle_payment(request, chit_id):
-    
-    config_values = app_config()
+    app_config()
 
     chit = get_object_or_404(ChitRegistration, id=chit_id)
 
@@ -267,13 +305,14 @@ def handle_payment(request, chit_id):
         overdue_fees = int(request.POST.get("overdue_fees", "0") or 0)
         cash_received = int(request.POST.get("cash_received", "0") or 0)
         amount_per_week = config_values.get(chit.chit_Type, 0) * chit.num_Of_Chits
-        
+    
+
+        num_of_chits = chit.num_Of_Chits if chit.num_Of_Chits else 1 
 
         total_amount = (payment_weeks * amount_per_week) + overdue_fees
         balance = cash_received - total_amount
         new_total_paid_week = total_paid_week + payment_weeks
 
-        
         payment = Payment.objects.create(
             chit_id=chit_id,
             chitnumber=chitnumber,
@@ -285,7 +324,7 @@ def handle_payment(request, chit_id):
             balance=balance,
             total_paid_week=new_total_paid_week,
             timestamp=datetime.now(),
-            
+            num_of_chits=num_of_chits 
         )
 
         return redirect('payment_summary', chit_id=chit_id)  
@@ -324,6 +363,9 @@ def summary_page(request):
     for chit_type, amount_per_week in config_values.items():
         if chit_type == "CHIT_TYPE":
             continue
+
+        chit_type = chit_type.strip()
+
         chits = ChitRegistration.objects.filter(chit_Type=chit_type)
         total_people = chits.count()
 
