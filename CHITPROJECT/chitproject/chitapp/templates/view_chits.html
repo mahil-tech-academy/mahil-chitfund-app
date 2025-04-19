@@ -128,6 +128,9 @@ Chit Fund Project | View Chits
     <br>
     <p><strong>Total Paid Weeks:</strong> {{ total_paid_week }}</p>
 
+    <p><strong>Ongoing Week:</strong> {{ ongoing_week }}</p>
+
+
     <form method="POST" action="{% url 'handle_payment' chit.id %}">
         {% csrf_token %}
             
