@@ -45,7 +45,9 @@ class Payment(models.Model):
     cash_received = models.DecimalField(max_digits=10, decimal_places=2)
     balance = models.DecimalField(max_digits=10, decimal_places=2)
     total_paid_week = models.IntegerField(default=0)
-    timestamp = models.DateTimeField(default=datetime.now) 
+    timestamp = models.DateTimeField(default=datetime.now)
+    num_of_chits = models.IntegerField(null=True, blank=True)
+    
 
     def save(self, *args, **kwargs):
         if self.chit_id:  
