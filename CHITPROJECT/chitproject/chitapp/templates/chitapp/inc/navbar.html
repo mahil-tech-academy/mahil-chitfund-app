@@ -11,6 +11,7 @@
             <a class="nav-link" href="/summary_page/"><i class=""></i> Summary Page</a>
             <a class="nav-link" href="/config_view/"><i class=""></i> Config View</a>
             <a class="nav-link" href="/make_admin/"><i class=""></i> Admin Access</a>
+            <a class="nav-link" href="/remove_admin/"><i class=""></i>Remove Admin</a>
             <a class="nav-link" href="{% url 'register' %}"><i class="fa fa-users"></i> User Register </a> 
         {% endif %}
 
@@ -20,7 +21,10 @@
 
         {% else %}
           <a class="nav-link" href="{% url 'admin_login' %}"><i class="fa fa-sign-in"></i> Admin Login</a>
+          
         {% endif %}
+
+         
         </div>
     </div>
   </nav>
