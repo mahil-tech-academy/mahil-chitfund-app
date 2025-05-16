@@ -416,3 +416,56 @@ def summary_page(request):
     
     return render(request, 'summary.html', {'summary_data': summary_data})
 
+
+def pending_below_32(request):
+    
+    date_entry = AdminConfig.objects.filter(key="START_DATE").first()
+    start_date = None
+    ongoing_week = 0
+
+    if date_entry:
+        try:
+            start_date = datetime.strptime(date_entry.value, "%d/%m/%Y").date()
+        except ValueError:
+            start_date = None
+
+    if start_date:
+        day_last_sunday = (start_date.weekday() + 1) % 7
+        last_sunday = start_date - timedelta(days=day_last_sunday)
+        ongoing_week = (date.today() - last_sunday).days // 7
+    else:
+        ongoing_week = 0  
+
+    chitnumbers_below_32 = (
+        Payment.objects
+        .values('chitnumber')
+        .annotate(max_paid_week=Max('total_paid_week'))
+        .filter(max_paid_week__lt=32)
+        .values_list('chitnumber', flat=True)
+    )
+
+    pending_people = ChitRegistration.objects.filter(chit_Number__in=chitnumbers_below_32)
+
+    payments_sum = (
+        Payment.objects
+        .filter(chitnumber__in=chitnumbers_below_32)
+        .values('chitnumber')
+        .annotate(total_paid=Max('total_paid_week'))
+    )
+    payment_map = {item['chitnumber']: item['total_paid'] for item in payments_sum}
+
+    pending_data = []
+    for person in pending_people:
+        paid = payment_map.get(person.chit_Number, 0)
+        pending_data.append({
+            'person': person,
+            'total_weeks_now': ongoing_week,
+            'paid_weeks': paid,
+            'pending_weeks': ongoing_week - paid
+        })
+
+    context = {
+        'pending_data': pending_data,
+        'ongoing_week': ongoing_week,  
+    }
+    return render(request, 'unpaid_pop_week.html', context)
