@@ -20,5 +20,5 @@ urlpatterns = [
     path('summary_page/', views.summary_page, name='summary_page'),
     path('admin_config_view/', views.admin_config_view, name='admin_config'),
     path("config_view/", views.config_view, name="config_view"),
-    
+    path("pending_below_32/",views.pending_below_32,name="pending_below_32"),
 ]
