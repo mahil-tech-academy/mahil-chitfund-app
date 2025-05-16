@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pending Chit Members</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            font-family: Arial, sans-serif; 
+            padding: 0px 100px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .summary-container {
+            max-width: 90%;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            margin: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 26px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        th {
+            background: #4facfe;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #e6f7ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="summary-container">
+        <h2>Pending Weeks</h2>
+
+        <table>
+            <tr>
+                <th>ChitType</th>
+                <th>ChitNumber</th>
+                <th>Name</th>
+                <th>PhoneNumber</th>
+                <th>TotalWeeksNow</th>
+                <th>PaidWeeks</th>
+                <th>PendingWeeks</th>
+            </tr>
+
+            {% if pending_data %}
+                {% for data in pending_data %}
+                    <tr>
+                        <td>{{ data.person.chit_Type }}</td>
+                        <td>{{ data.person.chit_Number }}</td>
+                        <td>{{ data.person.name }}</td>
+                        <td>{{ data.person.phoneNumber }}</td>
+                        <td>{{ data.total_weeks_now }}</td>
+                        <td>{{ data.paid_weeks }}</td>
+                        <td>{{ data.pending_weeks }}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="7">No pending people under 32 weeks.</td>
+                </tr>
+            {% endif %}
+        </table>
+    </div>
+</body>
+</html>
