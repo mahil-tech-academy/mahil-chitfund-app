@@ -417,7 +417,7 @@ def summary_page(request):
     return render(request, 'summary.html', {'summary_data': summary_data})
 
 
-def pending_below_32(request):
+def pending_week(request):
     
     date_entry = AdminConfig.objects.filter(key="START_DATE").first()
     start_date = None
@@ -436,7 +436,7 @@ def pending_below_32(request):
     else:
         ongoing_week = 0  
 
-    chitnumbers_below_32 = (
+    chitnumbers_below = (
         Payment.objects
         .values('chitnumber')
         .annotate(max_paid_week=Max('total_paid_week'))
@@ -444,20 +444,22 @@ def pending_below_32(request):
         .values_list('chitnumber', flat=True)
     )
 
-    pending_people = ChitRegistration.objects.filter(chit_Number__in=chitnumbers_below_32)
+    pending_people = ChitRegistration.objects.filter(chit_Number__in=chitnumbers_below)
 
     payments_sum = (
         Payment.objects
-        .filter(chitnumber__in=chitnumbers_below_32)
+        .filter(chitnumber__in=chitnumbers_below)
         .values('chitnumber')
         .annotate(total_paid=Max('total_paid_week'))
     )
     payment_map = {item['chitnumber']: item['total_paid'] for item in payments_sum}
 
     pending_data = []
+
     for person in pending_people:
         paid = payment_map.get(person.chit_Number, 0)
         pending_data.append({
+            'chitid': person.id,
             'person': person,
             'total_weeks_now': ongoing_week,
             'paid_weeks': paid,
@@ -468,4 +470,33 @@ def pending_below_32(request):
         'pending_data': pending_data,
         'ongoing_week': ongoing_week,  
     }
-    return render(request, 'unpaid_pop_week.html', context)
+    return render(request, 'unpaid_week.html', context)
+
+
+def chit_payment_detail(request, chit_id):
+
+    person = get_object_or_404(ChitRegistration, id=chit_id)
+    payments = Payment.objects.filter(chitnumber=person.chit_Number).order_by('-timestamp')
+
+    payment_details = []
+    for pay in payments:
+        formatted_time=pay.timestamp.strftime('%y.%m.%d')
+        payment_details.append({
+            'chit_id': pay.chit_id,
+            'chitnumber': pay.chitnumber,
+            'payment_weeks': pay.payment_weeks,
+            'amount_per_week': pay.amount_per_week,
+            'total_amount': pay.total_amount,
+            'overdue_fees': pay.overdue_fees,
+            'cash_received': pay.cash_received,
+            'balance': pay.balance,
+            'total_paid_week': pay.total_paid_week,
+            'timestamp': formatted_time,
+            'num_of_chits': pay.num_of_chits,
+        })
+
+    context = {
+        'person': person,
+        'payment_details': payment_details,
+    }
+    return render(request, 'payment_week_detail.html', context)
