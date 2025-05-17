@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Week Details</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            font-family: Arial, sans-serif; 
+            padding: 0px 100px;
+            text-align: center;
+            font-size: 18px;
+            margin: 0;
+        }
+
+        .summary-container {
+            max-width: 90%;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 40px auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 26px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        th {
+            background: #4facfe;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .back-button {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 25px;
+            background-color: #4facfe;
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+}
+    </style>
+</head>
+<body>
+    <div class="summary-container">
+        <h2>Payment Details for {{ person.name }} (Chit Number: {{ person.chit_Number }})</h2>
+        <table>
+            <tr>
+                <th>Chit ID</th>
+                <th>Chit Number</th>
+                <th>Payment Weeks</th>
+                <th>Amount Per Week</th>
+                <th>Total Amount</th>
+                <th>Overdue Fees</th>
+                <th>Cash Received</th>
+                <th>Balance</th>
+                <th>Total Paid Week</th>
+                <th>Timestamp</th>
+                <th>Number of Chits</th>
+            </tr>
+            {% for pay in payment_details %}
+            <tr>
+                <td>{{ pay.chit_id }}</td>
+                <td>{{ pay.chitnumber }}</td>
+                <td>{{ pay.payment_weeks }}</td>
+                <td>{{ pay.amount_per_week }}</td>
+                <td>{{ pay.total_amount }}</td>
+                <td>{{ pay.overdue_fees }}</td>
+                <td>{{ pay.cash_received }}</td>
+                <td>{{ pay.balance }}</td>
+                <td>{{ pay.total_paid_week }}</td>
+                <td>{{ pay.timestamp }}</td>
+                <td>{{ pay.num_of_chits }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="11">No payment records found.</td></tr>
+            {% endfor %}
+        </table>
+        <a href="{% url 'pending_week' %}" class="back-button">Back</a>
+    </div>
+</body>
+</html>
