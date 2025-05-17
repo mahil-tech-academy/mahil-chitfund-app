@@ -40,7 +40,7 @@
         }
 
         th {
-            background: #4facfe;
+            background: #4aa9fc;
             color: white;
         }
 
@@ -48,9 +48,7 @@
             background-color: #f9f9f9;
         }
 
-        tr:hover {
-            background-color: #e6f7ff;
-        }
+        
     </style>
 </head>
 <body>
@@ -59,6 +57,7 @@
 
         <table>
             <tr>
+                <th>ChitId</th>
                 <th>ChitType</th>
                 <th>ChitNumber</th>
                 <th>Name</th>
@@ -71,8 +70,9 @@
             {% if pending_data %}
                 {% for data in pending_data %}
                     <tr>
+                        <td>{{ data.person.id }}</td>
                         <td>{{ data.person.chit_Type }}</td>
-                        <td>{{ data.person.chit_Number }}</td>
+                        <td><a href="{% url 'chit_payment_detail' data.person.id %}">{{ data.person.chit_Number }}</a></td>
                         <td>{{ data.person.name }}</td>
                         <td>{{ data.person.phoneNumber }}</td>
                         <td>{{ data.total_weeks_now }}</td>
@@ -82,7 +82,7 @@
                 {% endfor %}
             {% else %}
                 <tr>
-                    <td colspan="7">No pending people under 32 weeks.</td>
+                    <td colspan="7">No pending people under weeks.</td>
                 </tr>
             {% endif %}
         </table>
