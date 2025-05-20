@@ -11,7 +11,9 @@ from django.contrib.auth import authenticate, login,logout
 from .forms import RegisterForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-
+import re
+from django.views.decorators.csrf import csrf_exempt
+import pywhatkit as kit
 
 def index(request):
     return render(request, 'chitapp/index.html')
@@ -480,7 +482,7 @@ def chit_payment_detail(request, chit_id):
 
     payment_details = []
     for pay in payments:
-        formatted_time=pay.timestamp.strftime('%y.%m.%d')
+        formatted_time=pay.timestamp.strftime('%d.%m.%y %H:%M:%S')
         payment_details.append({
             'chit_id': pay.chit_id,
             'chitnumber': pay.chitnumber,
@@ -500,3 +502,79 @@ def chit_payment_detail(request, chit_id):
         'payment_details': payment_details,
     }
     return render(request, 'payment_week_detail.html', context)
+
+
+@csrf_exempt
+def send_all_whatsapp_messages(request):
+    if request.method == 'POST':
+
+        date_entry = AdminConfig.objects.filter(key="START_DATE").first()
+        start_date = None
+        ongoing_week = 0
+
+        if date_entry:
+            try:
+                start_date = datetime.strptime(date_entry.value, "%d/%m/%Y").date()
+            except ValueError:
+                start_date = None
+
+        if start_date:
+            day_last_sunday = (start_date.weekday() + 1) % 7
+            last_sunday = start_date - timedelta(days=day_last_sunday)
+            ongoing_week = (date.today() - last_sunday).days // 7
+        else:
+            ongoing_week = 0  
+
+        chitnumbers_below = (
+            Payment.objects
+            .values('chitnumber')
+            .annotate(max_paid_week=Max('total_paid_week'))
+            .filter(max_paid_week__lt=32)  
+            .values_list('chitnumber', flat=True)
+        )
+
+        pending_people = ChitRegistration.objects.filter(chit_Number__in=chitnumbers_below)
+
+        payments_sum = (
+            Payment.objects
+            .filter(chitnumber__in=chitnumbers_below)
+            .values('chitnumber')
+            .annotate(total_paid=Max('total_paid_week'))
+        )
+        payment_map = {item['chitnumber']: item['total_paid'] for item in payments_sum}
+
+        for person in pending_people:
+            chit_number = person.chit_Number
+            name = person.name
+            phone = person.phoneNumber
+            paid_weeks = payment_map.get(chit_number, 0)
+            pending = ongoing_week - paid_weeks 
+            if pending < 0:
+                pending = 0  
+
+            msg = f'''
+            அன்பார்ந்த மகிழ் வாடிக்கையாளர்களே!
+            
+            தங்கள் தீபாவளி வாராந்திர சீட்டு எண் மற்றும் பெயர்: {chit_number} - {name}
+            
+            தாங்கள் இதுவரை {paid_weeks} வாரங்கள் சீட்டு பணம் செலுத்தி இருக்கிறீர்கள்.
+                        
+            மொத்தம் செலுத்த வேண்டிய {ongoing_week} வாரங்களில் இன்னும் {pending} வாரங்கள் செலுத்தப்பட வேண்டியுள்ளது.
+            
+            தயவுசெய்து உங்கள் பாக்கி வாரங்களை வாராந்திர சீட்டு தேதிக்குள் செலுத்தவும்.
+            
+            நன்றி,
+            அன்புடன்,
+            மகிழ் கஃபே!
+            '''
+
+            valid_phone = re.fullmatch(r'[6-9]\d{9}', phone)
+
+            if valid_phone:
+                try:
+                    kit.sendwhatmsg_instantly(f'+91{phone}', msg, 15, 20)
+                    print(f"✅ Message sent to {chit_number} - {name}")
+                except Exception as e:
+                    print(f"❌ Failed to send message to {chit_number} - {name}: {e}")
+
+    return redirect('pending_week')
