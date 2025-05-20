@@ -48,23 +48,49 @@
             background-color: #f9f9f9;
         }
 
-        
+        .send-button {
+        margin-top: 20px;
+        margin-bottom: 10px;
+        text-align: right;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+    }
+
     </style>
 </head>
 <body>
     <div class="summary-container">
         <h2>Pending Weeks</h2>
 
+        <div class="send-button">
+            <form method="POST" action="{% url 'send_all_whatsapp_messages' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn-success">Send WhatsApp Messages</button>
+            </form>
+        </div>
+
         <table>
             <tr>
-                <th>ChitId</th>
-                <th>ChitType</th>
-                <th>ChitNumber</th>
+                <th>Chit Id</th>
+                <th>Chit Type</th>
+                <th>Chit Number</th>
                 <th>Name</th>
-                <th>PhoneNumber</th>
-                <th>TotalWeeksNow</th>
-                <th>PaidWeeks</th>
-                <th>PendingWeeks</th>
+                <th>Phone Number</th>
+                <th>Total Weeks Now</th>
+                <th>Paid Weeks</th>
+                <th>Pending Weeks</th>
             </tr>
 
             {% if pending_data %}
@@ -82,7 +108,7 @@
                 {% endfor %}
             {% else %}
                 <tr>
-                    <td colspan="7">No pending people under weeks.</td>
+                    <td colspan="8">No pending people under weeks.</td>
                 </tr>
             {% endif %}
         </table>
