@@ -22,4 +22,6 @@ urlpatterns = [
     path("config_view/", views.config_view, name="config_view"),
     path("pending_week/",views.pending_week,name="pending_week"),
     path('chit_payment/<int:chit_id>/', views.chit_payment_detail, name='chit_payment_detail'),
+    path('send-all-messages/', views.send_all_whatsapp_messages, name='send_all_whatsapp_messages'),
+
 ]
