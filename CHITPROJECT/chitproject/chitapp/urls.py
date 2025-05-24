@@ -23,5 +23,6 @@ urlpatterns = [
     path("pending_week/",views.pending_week,name="pending_week"),
     path('chit_payment/<int:chit_id>/', views.chit_payment_detail, name='chit_payment_detail'),
     path('send-all-messages/', views.send_all_whatsapp_messages, name='send_all_whatsapp_messages'),
-
+    path('show_messages/', views.show_whatsapp_messages, name='show_messages'),
+    path('daily_summary/',views.daily_summary_page,name="daily_summary"),
 ]
