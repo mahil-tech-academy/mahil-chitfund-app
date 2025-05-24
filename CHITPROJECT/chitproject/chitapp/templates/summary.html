@@ -61,7 +61,19 @@ Chit Fund Project | Summary Page
             background: #4facfe;
             color: white;
         }
+         .back-btn {
+            background-color: #0c0c0c;
+            color: white;
+        }
 
+        button {
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
     </style>
 </head>
 <body>
@@ -97,7 +109,9 @@ Chit Fund Project | Summary Page
             </tr>
             {% endfor %}
         </table>
-        
+        <div class="btn-container">
+            <a href="{% url 'index' %}"><button class="back-btn">Back</button></a>
+        </div>
     </div>
 </body>
 </html>
