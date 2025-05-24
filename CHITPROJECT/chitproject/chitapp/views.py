@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import ChitRegistration,Payment
+from .models import ChitRegistration,Payment,WhatsAppMessageLog
 from .forms import ChitForm
 from datetime import datetime,date,timedelta
 from django.db.models import Sum
@@ -14,6 +14,7 @@ from django.contrib.auth.decorators import login_required
 import re
 from django.views.decorators.csrf import csrf_exempt
 import pywhatkit as kit
+
 
 def index(request):
     return render(request, 'chitapp/index.html')
@@ -248,10 +249,21 @@ def view_chits(request):
     else:
         ongoing_week = 0
 
+    chit_number_combined = None
     if chit_Type and chit_Number:
-        chit = ChitRegistration.objects.filter(chit_Type=chit_Type, chit_Number=chit_Number).first()
+        prefix = chit_Type.split('-')[0].upper()
 
-        if chit:
+        if chit_Number.isdigit(): 
+            formatted_number = chit_Number.zfill(4)
+            chit_number_combined = f"{prefix}{formatted_number}"
+        else:
+            chit_number_combined = chit_Number.upper()
+
+        chit = ChitRegistration.objects.filter(
+            chit_Number__iexact=chit_number_combined
+        ).first()
+
+    if chit:
             base_amount = config_values.get(chit.chit_Type, 0)
             num_of_chits = chit.num_Of_Chits  
             chit_amount = base_amount * num_of_chits 
@@ -417,7 +429,47 @@ def summary_page(request):
         })
     
     return render(request, 'summary.html', {'summary_data': summary_data})
+def daily_summary_page(request):
+    app_config()
 
+    today = date.today()
+    start_date = today - timedelta(days=6)
+    date_range = [start_date + timedelta(days=i) for i in range(7)]
+
+    chit_types = [k.strip() for k in config_values.keys() if k != "CHIT_TYPE"]
+    summary_data = []
+    grand_total = 0  
+
+    for chit_type in chit_types:
+        amount_per_week = config_values[chit_type]
+        chit_ids = ChitRegistration.objects.filter(chit_Type=chit_type).values_list('id', flat=True)
+
+        daily_amounts = []
+        for day in date_range:
+            day_amount = Payment.objects.filter(
+                chit_id__in=chit_ids,
+                timestamp__date=day
+            ).aggregate(day_total=Sum('total_amount'))['day_total'] or 0
+            daily_amounts.append(day_amount)
+
+        total_amount = sum(daily_amounts)
+        grand_total += total_amount  
+
+        summary_data.append({
+            'chit_type': chit_type,
+            'chit_amount': amount_per_week,
+            'daily_amounts': daily_amounts,
+            'total_amount_in_range': total_amount,
+        })
+
+    context = {
+        'summary_data': summary_data,
+        'date_range': date_range,
+        'grand_total': grand_total,
+        'colspan_total': 2 + len(date_range), 
+    }
+
+    return render(request, 'daily_summary.html', context)
 
 def pending_week(request):
     
@@ -442,7 +494,7 @@ def pending_week(request):
         Payment.objects
         .values('chitnumber')
         .annotate(max_paid_week=Max('total_paid_week'))
-        .filter(max_paid_week__lt=32)
+        .filter(max_paid_week__lt=ongoing_week)
         .values_list('chitnumber', flat=True)
     )
 
@@ -507,7 +559,6 @@ def chit_payment_detail(request, chit_id):
 @csrf_exempt
 def send_all_whatsapp_messages(request):
     if request.method == 'POST':
-
         date_entry = AdminConfig.objects.filter(key="START_DATE").first()
         start_date = None
         ongoing_week = 0
@@ -522,14 +573,12 @@ def send_all_whatsapp_messages(request):
             day_last_sunday = (start_date.weekday() + 1) % 7
             last_sunday = start_date - timedelta(days=day_last_sunday)
             ongoing_week = (date.today() - last_sunday).days // 7
-        else:
-            ongoing_week = 0  
 
         chitnumbers_below = (
             Payment.objects
             .values('chitnumber')
             .annotate(max_paid_week=Max('total_paid_week'))
-            .filter(max_paid_week__lt=32)  
+            .filter(max_paid_week__lt=ongoing_week)
             .values_list('chitnumber', flat=True)
         )
 
@@ -548,33 +597,68 @@ def send_all_whatsapp_messages(request):
             name = person.name
             phone = person.phoneNumber
             paid_weeks = payment_map.get(chit_number, 0)
-            pending = ongoing_week - paid_weeks 
-            if pending < 0:
-                pending = 0  
+            pending = max(ongoing_week - paid_weeks, 0)
 
             msg = f'''
-            அன்பார்ந்த மகிழ் வாடிக்கையாளர்களே!
-            
-            தங்கள் தீபாவளி வாராந்திர சீட்டு எண் மற்றும் பெயர்: {chit_number} - {name}
-            
-            தாங்கள் இதுவரை {paid_weeks} வாரங்கள் சீட்டு பணம் செலுத்தி இருக்கிறீர்கள்.
-                        
-            மொத்தம் செலுத்த வேண்டிய {ongoing_week} வாரங்களில் இன்னும் {pending} வாரங்கள் செலுத்தப்பட வேண்டியுள்ளது.
-            
-            தயவுசெய்து உங்கள் பாக்கி வாரங்களை வாராந்திர சீட்டு தேதிக்குள் செலுத்தவும்.
-            
-            நன்றி,
-            அன்புடன்,
-            மகிழ் கஃபே!
-            '''
+                    அன்பார்ந்த மகிழ் வாடிக்கையாளர்களே!
+
+                    தங்கள் தீபாவளி வாராந்திர சீட்டு எண் மற்றும் பெயர்:
+                    சீட்டு எண்: {chit_number}
+                    பெயர்: {name}
+
+                    இதுவரை செலுத்திய வாரங்கள்: {paid_weeks}
+                    மொத்தம் செலுத்த வேண்டிய வாரங்கள்: {ongoing_week}
+                    பாக்கி வாரங்கள்: {pending}
+
+                    தயவுசெய்து உங்கள் பாக்கி தொகையை சீக்கிரம் செலுத்தவும்.
+
+                    நன்றி,
+                    அன்புடன்,
+                    மகிழ் கஃபே!
+                    '''
 
             valid_phone = re.fullmatch(r'[6-9]\d{9}', phone)
+            status = "Failed"
+            error_message = ""
 
             if valid_phone:
                 try:
                     kit.sendwhatmsg_instantly(f'+91{phone}', msg, 15, 20)
                     print(f"✅ Message sent to {chit_number} - {name}")
+                    status = "Sent"
                 except Exception as e:
                     print(f"❌ Failed to send message to {chit_number} - {name}: {e}")
+                    error_message = str(e)
+            else:
+                error_message = "Invalid phone number"
+
+            WhatsAppMessageLog.objects.create(
+                chit_number=chit_number,
+                name=name,
+                phone_number=phone,
+                message=msg.strip(),
+                status=status,
+                error_message=error_message
+            )
 
     return redirect('pending_week')
+
+
+def show_whatsapp_messages(request):
+
+    #file_path = 'pyWhatKit_DB.txt'  
+    messages = []
+
+    """if os.path.exists(file_path):
+        with open(file_path, 'r', encoding='utf-8') as file:
+            content = file.read()
+            file_messages = content.strip().split('--------------------')
+            messages.extend([msg.strip() for msg in file_messages if msg.strip()])"""
+
+    db_messages = WhatsAppMessageLog.objects.all().values('message', 'phone_number','sent_time').order_by('sent_time')
+    messages.extend(list(db_messages))
+
+    context = {
+        'messages': messages
+    }
+    return render(request, 'show_messages.html', context)
