@@ -1,15 +1,18 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
       <a class="navbar-brand" href="{% url 'index' %}"><i class=""></i> Home </a>
-     
+      
         <div class="navbar-nav ms-auto">
 
         <a class="nav-link" href="/register_chit/"> Register </a>
         <a class="nav-link" href="/view_chits/"> View Chits </a>
+        <a class="nav-link" href="/daily_summary/"><i class=""></i>Daily Summary Page</a>
+
 
         {% if request.user.is_superuser %}
             <a class="nav-link" href="/summary_page/"><i class=""></i> Summary Page</a>
             <a class="nav-link" href="/pending_week/"><i class=""></i>Pending Weeks</a>
+            <a class="nav-link" href="/show_messages/"><i class=""></i>Show Messages</a>
             <a class="nav-link" href="/config_view/"><i class=""></i> Config View</a>
             <a class="nav-link" href="/make_admin/"><i class=""></i> Admin Access</a>
             <a class="nav-link" href="/remove_admin/"><i class=""></i>Remove Admin</a>
@@ -30,3 +33,4 @@
     </div>
   </nav>
  
+
