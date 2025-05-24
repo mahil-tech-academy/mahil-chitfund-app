@@ -1,0 +1,93 @@
+{% extends 'chitapp/layouts/main.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <title>WhatsApp Message History</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            font-family: Arial, sans-serif;
+            padding: 100px 100px;
+            text-align: center;
+            font-size: 18px;
+            margin: 0;
+        }
+
+        nav {
+            background-color: #1e1e1e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 25px;
+            flex-wrap: nowrap;
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+
+        .summary-container {
+            max-width: 90%;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 40px auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 26px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .msg {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 20px 0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            text-align: left;
+            font-size: 16px;
+            border: 1px solid #ddd;
+        }
+
+        .msg p {
+            margin: 8px 0;
+            color: #444;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 25px;
+            background-color: #0a0a0a;
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="summary-container">
+        <h2>WhatsApp Message History</h2>
+
+        {% for msg in messages %}
+            <div class="msg">
+                <p><strong>Time:</strong> {{ msg.sent_time|date:"Y-m-d H:i:s" }}</p>
+                <p><strong>PhoneNumber:</strong>{{msg.phone_number}}</p>
+                <p><strong>Message:</strong>{{ msg.message|linebreaksbr }}</p>
+                
+            </div>
+        {% empty %}
+            <p>No messages found.</p>
+        {% endfor %}
+
+        <a href="{% url 'pending_week' %}" class="back-button">Back</a>
+    </div>
+</body>
+</html>
+{% endblock content %}
