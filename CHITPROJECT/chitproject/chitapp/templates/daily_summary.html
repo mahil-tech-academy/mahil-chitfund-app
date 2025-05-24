@@ -1,0 +1,110 @@
+{% extends 'chitapp/layouts/main.html' %}
+
+{% block title %}
+Chit Fund Project | Daily Summary
+{% endblock title %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Daily Payment Summary</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            font-family: Arial, sans-serif;
+            padding: 230px 80px;
+            text-align: center;
+            font-size: 18px;
+            min-height: 100vh;
+        }
+
+        nav {
+            background-color: #1e1e1e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 25px;
+            flex-wrap: nowrap;
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+
+        .summary-container {
+            max-width: 90%;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            margin: auto;
+            overflow-x: auto;
+        }
+
+        h2 {
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px auto;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+            font-size: 16px;
+            white-space: nowrap;
+        }
+
+        th {
+            background: #4facfe;
+            color: white;
+        }
+
+        td:nth-child(n+3):nth-last-child(n+2) {
+            background-color: #f0f8ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="summary-container">
+        <h2>Daily Payment Amount Summary</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Chit Type</th>
+                    <th>Amount Per Week</th>
+                    {% for d in date_range %}
+                        <th>{{ d|date:"j.n.Y" }}</th>  
+                    {% endfor %}
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for chit in summary_data %}
+                  <tr>
+                      <td>{{ chit.chit_type }}</td>
+                      <td>₹{{ chit.chit_amount }}</td>
+                      {% for amt in chit.daily_amounts %}
+                          <td>₹{{ amt }}</td>
+                      {% endfor %}
+                      <td><strong>₹{{ chit.total_amount_in_range }}</strong></td>
+                  </tr>
+                  {% endfor %}
+
+                  <tr>
+                      <td colspan="{{ colspan_total }}" style="text-align: right; font-weight: bold;">
+                          Total Amount
+                      </td>
+                      <td style="font-weight: bold;">₹{{ grand_total }}</td>
+                  </tr>
+
+
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+{% endblock content %}
