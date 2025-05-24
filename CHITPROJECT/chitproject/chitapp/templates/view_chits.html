@@ -17,6 +17,17 @@ Chit Fund Project | View Chits
         text-align: center;
         font-size: 18px;
     }
+     nav {
+        background-color: #1e1e1e;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 25px;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        overflow-x: auto;
+    }
+
 
     .form-container {
         max-width: 700px;
@@ -88,7 +99,48 @@ Chit Fund Project | View Chits
         margin-top: 20px;
         
     }
+   
+    .week-checkbox-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+        cursor: pointer;
+    }
 
+    .week-checkbox-wrapper input[type="checkbox"] {
+        display: none;
+    }
+
+    .custom-checkbox {
+        width: 18px;
+        height: 18px;
+        border: 2px solid #ccc;
+        border-radius: 3px;
+        display: inline-block;
+        position: relative;
+        background-color: white;
+    }
+
+    .week-checkbox-wrapper input[type="checkbox"]:checked + .custom-checkbox::after {
+        content: "";
+        position: absolute;
+        left: 4px;
+        width: 6px;
+        height: 12px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+    }
+
+    .week-checkbox-wrapper input[type="checkbox"]:checked + .custom-checkbox {
+        background-color: rgb(19, 78, 241);
+    }
+
+    .week-checkbox-wrapper input[type="checkbox"]:disabled + .custom-checkbox {
+        background-color: green;
+        cursor: not-allowed;
+    }
 </style>
 
 
@@ -103,6 +155,7 @@ Chit Fund Project | View Chits
             {% endfor %}
         </select>
 
+        
         <label>Chit Number:</label>
         <input type="text" name="chit_Number" placeholder="Enter Chit Number" value="{{ request.GET.chit_Number }}">
 
@@ -129,9 +182,8 @@ Chit Fund Project | View Chits
     <p><strong>Total Paid Weeks:</strong> {{ total_paid_week }}</p>
 
     <p><strong>Ongoing Week:</strong> {{ ongoing_week }}</p>
-
-
-    <form method="POST" action="{% url 'handle_payment' chit.id %}">
+    
+    <form method="POST" action="{% url 'handle_payment' chit.id %}" onsubmit="return confirmPayment()">
         {% csrf_token %}
             
         <label>Enter Number of Weeks:</label>
@@ -139,11 +191,14 @@ Chit Fund Project | View Chits
     
         <div class="weeks-container">
             {% for week in weeks %}
-                <label>
+                <label class="week-checkbox-wrapper">
                     <input type="checkbox" class="week-checkbox" name="selected_weeks" value="{{ week }}" 
                     {% if week <= total_paid_week %} disabled checked {% endif %}>
+                    <span class="custom-checkbox"></span>
                     Week {{ week }}
                 </label>
+  
+
             {% endfor %}
         </div>
     
@@ -208,27 +263,41 @@ Chit Fund Project | View Chits
     }
 
         function calculateTotal() {
-            let numWeeks = parseInt(document.getElementById("selected_weeks_count").value) || 0;
-            let amountPerWeek = parseFloat(document.getElementById("amount_per_week").value) || 0;
-            let overdueFees = parseFloat(document.getElementById("overdue_fees").value) || 0;
-            let cashReceived = parseFloat(document.getElementById("cash_received").value) || 0;
+        let numWeeks = parseInt(document.getElementById("selected_weeks_count").value) || 0;
+        let amountPerWeek = parseFloat(document.getElementById("amount_per_week").value) || 0;
+        let overdueFees = parseFloat(document.getElementById("overdue_fees").value) || 0;
+        let cashReceived = parseFloat(document.getElementById("cash_received").value) || 0;
 
-            let totalAmount = numWeeks * amountPerWeek;
-            document.getElementById("total_amount").value = totalAmount;
-            document.getElementById("balance").value = totalAmount - cashReceived;
+        let totalAmount = (numWeeks * amountPerWeek) + overdueFees;
+        document.getElementById("total_amount").value = totalAmount;
+        let balance = totalAmount - cashReceived;
+        document.getElementById("balance").value = balance;
 
-            if(cashReceived && cashReceived < totalAmount){
-                document.getElementById("message").innerText="Amount is less than total amount.Please Check.."
-                document.getElementById("message").style.color="red";
-                document.getElementById("confirm_payment").disabled=true;
-            }else{
-                document.getElementById("message").innerText="";
-
-                if(cashReceived>=totalAmount){
-                    document.getElementById("confirm_payment").disabled=false;
-                }
-            }
+        if (cashReceived && cashReceived < totalAmount) {
+            document.getElementById("message").innerText = "Cash received is less than the total amount.";
+            document.getElementById("message").style.color = "red";
+            document.getElementById("confirm_payment").disabled = true;
+        } else {
+            document.getElementById("message").innerText = "";
+            document.getElementById("confirm_payment").disabled = false;
         }
+    }
+
+    function confirmPayment() {
+        let totalAmount = document.getElementById("total_amount").value || 0;
+        let weeks = document.getElementById("selected_weeks_count").value || 0;
+        let cashReceived = parseFloat(document.getElementById("cash_received").value) || 0;
+        
+        let balance = totalAmount - cashReceived;
+
+        let confirmMsg = `Selected Weeks : ${weeks}\n` +
+                         `CashReceived : ${cashReceived}\n`+
+                         `Total Amount : ₹${totalAmount}\n` +
+                         `Balance : ₹${balance}\n\n`+
+                         `Click Ok Button.`;
+                         
+        return confirm(confirmMsg);
+    }
         
         document.getElementById("num_weeks").addEventListener("input", selectWeeks);
         document.getElementById("overdue_fees").addEventListener("input", calculateTotal);
