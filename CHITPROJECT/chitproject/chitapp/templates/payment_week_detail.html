@@ -1,3 +1,7 @@
+{% extends 'chitapp/layouts/main.html' %}
+
+{% block content %}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,11 +10,21 @@
         body {
             background: linear-gradient(135deg, #74ebd5, #acb6e5);
             font-family: Arial, sans-serif; 
-            padding: 0px 100px;
+            padding: 100px 100px;
             text-align: center;
             font-size: 18px;
             margin: 0;
         }
+         nav {
+        background-color: #1e1e1e;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 25px;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        overflow-x: auto;
+    }
 
         .summary-container {
             max-width: 90%;
@@ -41,10 +55,6 @@
             font-size: 16px;
         }
 
-        th {
-            background: #4facfe;
-            color: white;
-        }
 
         tr:nth-child(even) {
             background-color: #f9f9f9;
@@ -53,16 +63,35 @@
             display: inline-block;
             margin-top: 30px;
             padding: 12px 25px;
-            background-color: #4facfe;
+            background-color: #0a0a0a;
             color: white;
             font-weight: 600;
             text-decoration: none;
-}
+        }
+        .btn-success {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+    }
+      .send-button {
+        margin-top: 20px;
+        margin-bottom: 10px;
+        text-align: right;
+    }
     </style>
 </head>
 <body>
     <div class="summary-container">
         <h2>Payment Details for {{ person.name }} (Chit Number: {{ person.chit_Number }})</h2>
+
         <table>
             <tr>
                 <th>Chit ID</th>
@@ -99,3 +128,5 @@
     </div>
 </body>
 </html>
+{% endblock content %}
+
