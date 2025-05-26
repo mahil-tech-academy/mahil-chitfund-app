@@ -10,173 +10,210 @@ Chit Fund Project | View Chits
 
 <br>
 <style>
-    body {
-        background: linear-gradient(135deg, #74ebd5, #acb6e5);
-        font-family: Arial, sans-serif; 
-        padding: 100px;
-        text-align: center;
-        font-size: 18px;
-    }
-     nav {
-        background-color: #1e1e1e;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 25px;
-        flex-wrap: nowrap;
-        white-space: nowrap;
-        overflow-x: auto;
-    }
-
-
-    .form-container {
-        max-width: 700px;
-        background: #fff;
-        padding: 30px;
-        border-radius: 12px;
-        margin: auto;
-        text-align: left;
-        font-weight: 300;
-    }
-    .form-title {
-            font-size: 24px;
-            font-weight: bold;
+        body {
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            font-family: Arial, sans-serif; 
+            padding: 60px;
             text-align: center;
-            color: #333;
-            margin-bottom: 20px;
+            font-size: 18px;
         }
-    label {
-        font-weight: 300;
-        margin-bottom: 5px;
-    }
+        nav {
+            background-color: #1e1e1e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 25px;
+            flex-wrap: nowrap;
+            white-space: nowrap;
+            overflow-x: auto;
+        }
 
-    input[type="text"], input[type="number"], textarea, select {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 15px;
-        border: 1px solid #ccc;
-        font-size: 16px;
-    }
 
-    button {
-        width: 40%;
-        padding: 12px;
-        font-size: 16px;
-        font-weight: bold;
-        border: none;
-        border-radius: 5px;
-        
-    }
+        .form-container {
+            max-width: 700px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            margin: auto;
+            text-align: left;
+            font-weight: 300;
+        }
+        .form-title {
+                font-size: 24px;
+                font-weight: bold;
+                text-align: center;
+                color: #333;
+                margin-bottom: 20px;
+            }
+        label {
+            font-weight: 300;
+            margin-bottom: 5px;
+        }
 
-    button[type="submit"] {
-        background-color: #0c0c0c;
-        color: white;
-    }
+        input[type="text"], input[type="number"], textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
 
-    button[type="button"] {
-        background-color: #0f0e0e;
-        color: white;
-    }
+        button {
+            width: 40%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            
+        }
 
-    .weeks-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 5px;
-        justify-content: center;
-    }
+        button[type="submit"] {
+            background-color: #0c0c0c;
+            color: white;
+        }
 
-    .weeks-container label {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        font-size: 14px;
-    }
+        button[type="button"] {
+            background-color: #0f0e0e;
+            color: white;
+        }
 
-    .summary-container {
-        background: #f8f9fa;
-        padding: 20px;
-        border-radius: 10px;
-        margin-top: 20px;
-        
-    }
-   
-    .week-checkbox-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 14px;
-        cursor: pointer;
-    }
+        .weeks-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: center;
+        }
 
-    .week-checkbox-wrapper input[type="checkbox"] {
-        display: none;
-    }
+        .weeks-container label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+        }
 
-    .custom-checkbox {
-        width: 18px;
-        height: 18px;
-        border: 2px solid #ccc;
-        border-radius: 3px;
-        display: inline-block;
-        position: relative;
-        background-color: white;
-    }
+        .summary-container {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            
+        }
+    
+        .week-checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            cursor: pointer;
 
-    .week-checkbox-wrapper input[type="checkbox"]:checked + .custom-checkbox::after {
-        content: "";
-        position: absolute;
-        left: 4px;
-        width: 6px;
-        height: 12px;
-        border: solid white;
-        border-width: 0 2px 2px 0;
-        transform: rotate(45deg);
-    }
+            width: calc((110% / 8) - 5px); 
+            box-sizing: border-box;
+        }
 
-    .week-checkbox-wrapper input[type="checkbox"]:checked + .custom-checkbox {
-        background-color: rgb(19, 78, 241);
-    }
+        .week-checkbox-wrapper input[type="checkbox"] {
+            display: none;
+        }
 
-    .week-checkbox-wrapper input[type="checkbox"]:disabled + .custom-checkbox {
-        background-color: green;
-        cursor: not-allowed;
+        .custom-checkbox {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #ccc;
+            border-radius: 3px;
+            display: inline-block;
+            position: relative;
+            background-color: white;
+        }
+
+        .week-checkbox-wrapper input[type="checkbox"]:checked + .custom-checkbox::after {
+            content: "";
+            position: absolute;
+            left: 4px;
+            width: 6px;
+            height: 12px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .week-checkbox-wrapper input[type="checkbox"]:checked + .custom-checkbox {
+            background-color: rgb(19, 78, 241);
+        }
+
+        .week-checkbox-wrapper input[type="checkbox"]:disabled + .custom-checkbox {
+            background-color: green;
+            cursor: not-allowed;
+        }
+        .back-btn {
+            display: inline-block;
+            width: 40%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #0c0c0c; 
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .horizontal-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        .chit-btn {
+            background-color: #1e1e1e;
+            color: white;
+            border: 1px solid #444;
+            padding: 10px 18px;
+            font-size: 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
     }
-    .back-btn {
-    display: inline-block;
-    width: 40%;
-    padding: 12px;
-    font-size: 16px;
-    font-weight: bold;
-    background-color: #0c0c0c; 
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
 
 </style>
 
 
 <div class="form-container">
     <h2 class="form-title">View Chit Details</h2>
-    <form method="GET">
-        <label>Chit Type:</label>
-        <select name="chit_Type">
-            <option value="">-- Select Chit Type --</option>
-            {% for chit_type in chit_type_list %}
-            <option value="{{ chit_type }}" >{{ chit_type }}</option>
-            {% endfor %}
-        </select>
+   <form method="GET" id="searchForm">
+    <div class="horizontal-buttons">
+    {% for chit_type in chit_type_list %}
+        <button type="button" class="chit-btn" onclick="selectChitType('{{ chit_type }}')">
+            {{ chit_type }}
+        </button>
+    {% endfor %}
+</div>
 
-        
-        <label>Chit Number:</label>
-        <input type="text" name="chit_Number" placeholder="Enter Chit Number" value="{{ request.GET.chit_Number }}">
 
-        <button type="submit">Search</button>
-    </form>
+  <div id="chit-type-container" style="margin-bottom: 20px;"></div>
+
+  <label>Chit Number:</label>
+  <input type="text" name="chit_Number" placeholder="Enter Chit Number" required>
+
+  <button type="submit" id="submitBtn" disabled>Search</button>
+</form>
+
+<script>
+  function selectChitType(type) {
+    const container = document.getElementById('chit-type-container');
+
+    container.innerHTML = `
+      <label>Chit Type:</label>
+      <input type="text" value="${type}" readonly style="width: 100%; padding: 10px; margin-bottom: 10px;">
+      <input type="hidden" name="chit_Type" value="${type}">
+    `;
+
+    document.getElementById('submitBtn').disabled = false;
+  }
+</script>
+
 </div>
 
 {% if chit %}
@@ -206,17 +243,16 @@ Chit Fund Project | View Chits
         <input type="number" id="num_weeks" min="1" max="52" oninput="selectWeeks()">
     
         <div class="weeks-container">
-            {% for week in weeks %}
-                <label class="week-checkbox-wrapper">
-                    <input type="checkbox" class="week-checkbox" name="selected_weeks" value="{{ week }}" 
-                    {% if week <= total_paid_week %} disabled checked {% endif %}>
-                    <span class="custom-checkbox"></span>
-                    Week {{ week }}
-                </label>
-  
+    {% for week in weeks %}
+        <label class="week-checkbox-wrapper">
+            <input type="checkbox" class="week-checkbox" name="selected_weeks" value="{{ week }}" 
+            {% if week <= total_paid_week %} disabled checked {% endif %}>
+            <span class="custom-checkbox"></span>
+            Week {{ week }}
+        </label>
+    {% endfor %}
+</div>
 
-            {% endfor %}
-        </div>
     
         <div class="summary-container">
             <h3>Payment View Details</h3>
