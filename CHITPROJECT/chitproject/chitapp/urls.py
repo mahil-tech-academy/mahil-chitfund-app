@@ -1,5 +1,6 @@
 from django.urls import path
 from .import views 
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('register/', views.register, name='register'),
@@ -7,8 +8,8 @@ urlpatterns = [
     path('remove_admin/', views.remove_admin, name='remove_admin'),
     path('admin_login/', views.admin_login, name='admin_login'),
      path('', views.login_view, name='login'),
-    path('login/', views.login_view, name='login'),
-    path('Login/', views.login_redirect),
+     path('login/', auth_views.LoginView.as_view(template_name='chitapp/login.html'), name='login'),
+     path('Login/', views.login_redirect),
     path('index/', views.index, name='index'),
     path('logout',views.logout_page,name='logout'),
     path('register_chit/', views.register_chit, name='register_chit'),
@@ -25,4 +26,5 @@ urlpatterns = [
     path('send-all-messages/', views.send_all_whatsapp_messages, name='send_all_whatsapp_messages'),
     path('show_messages/', views.show_whatsapp_messages, name='show_messages'),
     path('daily_summary/',views.daily_summary_page,name="daily_summary"),
+    path('daily_view_payment_summary/', views.daily_view_payment_summary, name='daily_view_payment_summary'),
 ]
