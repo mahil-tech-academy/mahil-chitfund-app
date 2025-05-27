@@ -63,7 +63,7 @@ Chit Fund Project | Daily Summary
             color: white;
         }
 
-        td:nth-child(n+3):nth-last-child(n+2) {
+        td:nth-child(n+0):nth-last-child(n+1) {
             background-color: #f0f8ff;
         }
 
@@ -108,9 +108,15 @@ Chit Fund Project | Daily Summary
                   </tr>
                   {% endfor %}
 
+                  <tr style="font-weight: bold; ">
+                    <td colspan="2" style="text-align: right;">Total Amount Per Date</td>
+                    {% for amt in daily_grand_totals %}
+                    <td>₹{{ amt }}</td>
+                    {% endfor %}
+                  </tr>
                   <tr>
                       <td colspan="{{ colspan_total }}" style="text-align: right; font-weight: bold;">
-                          Total Amount
+                          Grand Total Amount
                       </td>
                       <td style="font-weight: bold;">₹{{ grand_total }}</td>
                   </tr>
