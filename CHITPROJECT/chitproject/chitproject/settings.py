@@ -47,6 +47,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'chitapp.middleware.LoginRequiredMiddleware',
+
 ]
 
 ROOT_URLCONF = 'chitproject.urls'
@@ -111,9 +113,6 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'Asia/Kolkata'
 
-TIME_ZONE = 'UTC'
-
-
 USE_I18N = True
 
 USE_TZ = False
@@ -129,11 +128,12 @@ STATICFILES_DIRS = [
 ]
 
 LOGIN_REDIRECT_URL = '/index/'
-LOGOUT_REDIRECT_URL = '/'
-LOGIN_URL = '/'
+LOGIN_URL = '/login/'
 
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#handler403 = 'chitapp.views.custom_permission_denied'
