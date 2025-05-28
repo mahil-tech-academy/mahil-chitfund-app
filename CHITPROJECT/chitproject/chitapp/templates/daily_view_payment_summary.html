@@ -1,0 +1,127 @@
+{% extends 'chitapp/layouts/main.html' %}
+
+{% block title %}
+Chit Fund Project | Daily Summary
+{% endblock title %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            font-family: Arial, sans-serif;
+            padding: 120px 100px;
+            text-align: center;
+            font-size: 18px;
+            min-height: 100vh;
+        }
+        nav {
+            background-color: #1e1e1e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 25px;
+            flex-wrap: nowrap;
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+
+        .summary-container {
+            max-width: 90%;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            margin: auto;
+            overflow-x: auto;
+        }
+
+        h2 {
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px auto;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+            font-size: 16px;
+            white-space: nowrap;
+        }
+
+        th {
+            background: #4facfe;
+            color: white;
+        }
+
+        td:nth-child(n+0):nth-last-child(n+1) {
+            background-color: #f0f8ff;
+        }
+
+        .back-btn {
+            background-color: #0c0c0c;
+            color: white;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="summary-container">
+        <h2>Daily Payment Summary</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Chit ID</th>
+                    <th>Chit Number</th>
+                    <th>Payment Weeks</th>
+                    <th>Amount Per Week</th>
+                    <th>Total Amount</th>
+                    <th>Overdue Fees</th>
+                    <th>Cash Received</th>
+                    <th>Balance</th>
+                    <th>Total Paid Weeks</th>
+                    <th>Last Payment Time</th>
+                    <th>Number of Chits</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in summary %}
+                <tr>
+                    <td>{{ item.chit_id }}</td>
+                    <td>{{ item.chitnumber }}</td>
+                    <td>{{ item.payment_weeks }}</td>
+                    <td>₹{{ item.amount_per_week }}</td>
+                    <td>₹{{ item.total_amount }}</td>
+                    <td>₹{{ item.overdue_fees }}</td>
+                    <td>₹{{ item.cash_received }}</td>
+                    <td>₹{{ item.balance }}</td>
+                    <td>{{ item.total_paid_week }}</td>
+                    <td>{{ item.timestamp|date:"j M Y, H:i" }}</td>
+                    <td>{{ item.num_of_chits }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="btn-container">
+            <a href="{% url 'index' %}"><button class="back-btn">Back</button></a>
+        </div>
+    </div>
+</body>
+</html>
+{% endblock content %}
