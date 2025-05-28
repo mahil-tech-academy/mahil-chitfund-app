@@ -27,8 +27,6 @@ Chit Fund Project | View Chits
             white-space: nowrap;
             overflow-x: auto;
         }
-
-
         .form-container {
             max-width: 700px;
             background: #fff;
@@ -39,17 +37,16 @@ Chit Fund Project | View Chits
             font-weight: 300;
         }
         .form-title {
-                font-size: 24px;
-                font-weight: bold;
-                text-align: center;
-                color: #333;
-                margin-bottom: 20px;
-            }
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
         label {
             font-weight: 300;
             margin-bottom: 5px;
         }
-
         input[type="text"], input[type="number"], textarea, select {
             width: 100%;
             padding: 10px;
@@ -65,7 +62,7 @@ Chit Fund Project | View Chits
             font-weight: bold;
             border: none;
             border-radius: 5px;
-            
+                    
         }
 
         button[type="submit"] {
@@ -174,46 +171,56 @@ Chit Fund Project | View Chits
             font-size: 14px;
             border-radius: 6px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            width: 180px;
+            text-align: center;
     }
+    .chit-btn.selected {
+    background-color: rgb(241, 241, 176);
+    color: black; 
+  }
 
 </style>
 
 
 <div class="form-container">
-    <h2 class="form-title">View Chit Details</h2>
-   <form method="GET" id="searchForm">
+  <h2 class="form-title">View Chit Details</h2>
+  <form method="GET" id="searchForm">
     <div class="horizontal-buttons">
-    {% for chit_type in chit_type_list %}
-        <button type="button" class="chit-btn" onclick="selectChitType('{{ chit_type }}')">
-            {{ chit_type }}
+      {% for chit_type in chit_type_list %}
+        <button type="button" class="chit-btn" onclick="selectChitType(this, '{{ chit_type }}')">
+          {{ chit_type }}
         </button>
-    {% endfor %}
-</div>
+      {% endfor %}
+    </div>
 
+    <input type="hidden" name="chit_Type" id="chitTypeInput">
 
-  <div id="chit-type-container" style="margin-bottom: 20px;"></div>
+    <label>Chit Number:</label>
+    <input type="text" name="chit_Number" id="chitNumber" placeholder="Enter Chit Number" required oninput="checkFormReady()">
 
-  <label>Chit Number:</label>
-  <input type="text" name="chit_Number" placeholder="Enter Chit Number" required>
+    <button type="submit" id="submitBtn" disabled>Search</button>
+  </form>
 
-  <button type="submit" id="submitBtn" disabled>Search</button>
-</form>
+  <script>
+    let selectedChitType = '';
 
-<script>
-  function selectChitType(type) {
-    const container = document.getElementById('chit-type-container');
+    function selectChitType(button, type) {
+      const buttons = document.querySelectorAll('.chit-btn');
+      buttons.forEach(btn => btn.classList.remove('selected'));
+      button.classList.add('selected');
 
-    container.innerHTML = `
-      <label>Chit Type:</label>
-      <input type="text" value="${type}" readonly style="width: 100%; padding: 10px; margin-bottom: 10px;">
-      <input type="hidden" name="chit_Type" value="${type}">
-    `;
+      selectedChitType = type;
+      document.getElementById('chitTypeInput').value = type;
 
-    document.getElementById('submitBtn').disabled = false;
-  }
-</script>
+      checkFormReady();
+    }
 
+    function checkFormReady() {
+      const chitNumber = document.getElementById('chitNumber').value.trim();
+      const isReady = chitNumber !== '' && selectedChitType !== '';
+      document.getElementById('submitBtn').disabled = !isReady;
+    }
+  </script>
 </div>
 
 {% if chit %}
