@@ -27,4 +27,5 @@ urlpatterns = [
     path('show_messages/', views.show_whatsapp_messages, name='show_messages'),
     path('daily_summary/',views.daily_summary_page,name="daily_summary"),
     path('daily_view_payment_summary/', views.daily_view_payment_summary, name='daily_view_payment_summary'),
+    path('total_payment_summary/', views.total_payment_summary, name='total_payment_summary'),
 ]
