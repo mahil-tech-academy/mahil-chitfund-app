@@ -1,0 +1,125 @@
+{% extends 'chitapp/layouts/main.html' %}
+
+{% block title %}
+Chit Fund Project | Daily Summary
+{% endblock title %}
+
+{% block content %}
+<style>
+body {
+    background: linear-gradient(135deg, #74ebd5, #acb6e5);
+    font-family: Arial, sans-serif;
+    padding: 80px 450px;
+    text-align: center;
+    font-size: 18px;
+    min-height: 100vh;
+}
+nav {
+    background-color: #1e1e1e;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 25px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    overflow-x: auto;
+}
+.summary-container {
+    max-width: 90%;
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    margin: auto;
+    overflow-x: auto;
+}
+h2 {
+    font-size: 26px;
+    font-weight: bold;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px auto;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+    font-size: 16px;
+    white-space: nowrap;
+}
+th {
+    background: #4facfe;
+    color: white;
+}
+td:nth-child(n+0):nth-last-child(n+1) {
+    background-color: #f0f8ff;
+}
+.back-btn {
+    background-color: #0c0c0c;
+    color: white;
+}
+button {
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+</style>
+
+<div class="summary-container">
+    <h2>Daily Payment Amount Summary</h2>
+
+    <form method="get" style="margin-bottom: 20px; text-align:left;">
+      <label for="date-select"><strong>Select Date: </strong></label>
+      <select name="date" id="date-select" onchange="this.form.submit()">
+        <option value="">-- All Dates --</option>
+        {% for date in all_dates %}
+          <option value="{{ date }}" {% if date == selected_date %}selected{% endif %}>{{ date }}</option>
+        {% endfor %}
+      </select>
+    </form>
+
+    <hr>
+
+    {% for chit in summary_data %}
+        <h3>{{ chit.name }} - {{ chit.chit_number }}</h3>
+
+        {% if chit.payment_details %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Weeks Paid</th>
+                    <th>Amount Per Week</th>
+                    <th>Amount Paid</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pay in chit.payment_details %}
+                <tr>
+                    <td>{{ pay.date }}</td>
+                    <td>{{ pay.weeks_paid }}</td>
+                    <td>₹{{ pay.amount_per_week }}</td>
+                    <td>₹{{ pay.amount_paid }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p>No payments found for this date.</p>
+        {% endif %}
+        <hr>
+    {% endfor %}
+
+    <div class="btn-container" style="margin-top: 30px;">
+        <a href="{% url 'index' %}"><button class="back-btn">Back</button></a>
+    </div>
+</div>
+
+{% endblock content %}
+
+
+
