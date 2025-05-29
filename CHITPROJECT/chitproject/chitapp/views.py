@@ -703,3 +703,47 @@ def daily_view_payment_summary(request):
         'summary': summary
     }
     return render(request, 'daily_view_payment_summary.html', context)
+
+
+def total_payment_summary(request):
+  
+    selected_date = request.GET.get('date')  
+
+    all_dates_qs = Payment.objects.values_list('timestamp__date', flat=True).distinct().order_by('timestamp__date')
+    all_dates = [d.strftime('%Y-%m-%d') for d in all_dates_qs if d]
+
+    chits = ChitRegistration.objects.all()
+
+    summary_data = []
+
+    for chit in chits:
+        payments = Payment.objects.filter(chit_id=chit.id)
+
+        if selected_date:
+            payments = payments.filter(timestamp__date=selected_date)
+
+        total_paid_weeks = payments.aggregate(Max('total_paid_week'))['total_paid_week__max'] or 0
+        total_amount_paid = payments.aggregate(Sum('cash_received'))['cash_received__sum'] or 0
+
+        payment_details = []
+        for p in payments.order_by('timestamp'):
+            payment_details.append({
+                'date': p.timestamp.strftime('%Y-%m-%d') if p.timestamp else 'N/A',
+                'weeks_paid': p.payment_weeks,
+                'amount_paid': p.cash_received,
+                'amount_per_week': p.amount_per_week,
+            })
+
+        summary_data.append({
+            'name': chit.name,
+            'chit_number': chit.chit_Number,
+            'total_weeks_paid': total_paid_weeks,
+            'total_amount_paid': total_amount_paid,
+            'payment_details': payment_details,
+        })
+
+    return render(request, 'total_payment_summary.html', {
+        'summary_data': summary_data,
+        'all_dates': all_dates,
+        'selected_date': selected_date,
+    })
