@@ -10,7 +10,7 @@
         body {
             background: linear-gradient(135deg, #74ebd5, #acb6e5);
             font-family: Arial, sans-serif;
-            padding: 100px 100px;
+            padding: 50px 440px;
             text-align: center;
             font-size: 18px;
             margin: 0;
@@ -67,22 +67,38 @@
             font-weight: 600;
             text-decoration: none;
         }
+       .sent {
+            background-color: #d4edda; 
+            color: #080808;             
+            padding: 10px;
+            margin: 10px 0;
+            text-align: left;   
+            white-space: pre-line;
 
+        }
+        .failed {
+            background-color: #f8d7da;  
+            color: #0f0f0f;             
+            padding: 10px;
+            margin: 10px 0;
+            text-align: left;
+            white-space: pre-line;  
+        }
     </style>
 </head>
 <body>
     <div class="summary-container">
         <h2>WhatsApp Message History</h2>
-
         {% for msg in messages %}
-            <div class="msg">
-                <p><strong>Time:</strong> {{ msg.sent_time|date:"Y-m-d H:i:s" }}</p>
-                <p><strong>PhoneNumber:</strong>{{msg.phone_number}}</p>
-                <p><strong>Message:</strong>{{ msg.message|linebreaksbr }}</p>
-                
-            </div>
+        <div class="{% if msg.status|lower == 'sent' %}sent{% else %}failed{% endif %}">
+            <strong>To:</strong> {{ msg.phone_number }}
+            <strong>Time:</strong> {{ msg.sent_time }}
+            <strong>Status:</strong>{{msg.status}}<br>
+            <strong>Message:</strong>
+            <div>{{ msg.message }}</div>
+        </div>
         {% empty %}
-            <p>No messages found.</p>
+        <p>No messages found.</p>
         {% endfor %}
 
         <a href="{% url 'pending_week' %}" class="back-button">Back</a>
