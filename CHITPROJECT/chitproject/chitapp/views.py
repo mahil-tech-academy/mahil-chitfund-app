@@ -83,6 +83,7 @@ def register(request):
         form = RegisterForm()
     return render(request, "chitapp/registration.html", {"form": form})
 
+
 def login_view(request):
     if request.method == "POST":
         username = request.POST['username']
@@ -97,13 +98,16 @@ def login_view(request):
 
     return render(request, 'chitapp/login.html')
 
+
 def login_redirect(request):
     return redirect('/login/')
+
 
 def logout_page(request):
         logout(request)
         messages.success(request,"Logged Out Successfuly")
         return redirect("/login")
+
 
 def admin_login(request):
     if request.user.is_authenticated:
@@ -124,6 +128,7 @@ def admin_login(request):
             return redirect('/index')
     return render(request, 'chitapp/adminlogin.html')
 
+
 def app_config():
     global config_values
     config_values = {}
@@ -140,6 +145,7 @@ def app_config():
             if len(parts) > 1 and parts[1].isdigit():  
                 config_values[chit] = int(parts[1])  
     return config_values
+
 
 @admin_only
 def config_view(request):
@@ -158,6 +164,7 @@ def config_view(request):
         return redirect("config_view")  
     return render(request, "config_view.html", {"configs": configs})
 
+
 @admin_only
 def admin_config_view(request):
     configs = AdminConfig.objects.order_by("id")
@@ -173,6 +180,7 @@ def admin_config_view(request):
         return redirect('admin_config')
 
     return render(request, 'admin_config.html', {'configs': configs, 'form': form})
+
 
 register_values = {}
 
@@ -193,6 +201,7 @@ def get_chit_number_firsttime():
         prefix = item.split("-")[0]
         chit_type_with_number[item] = prefix+"0000"
     return chit_type_with_number
+
 
 def register_chit(request):
 
@@ -228,6 +237,7 @@ def register_chit(request):
 
 def success(request):
     return render(request, 'success.html')
+
 
 def view_chits(request):
 
@@ -318,6 +328,7 @@ def edit_chit(request, chit_id):
 
     return render(request, 'edit_chit.html', {'form': form, 'chit': chit})
 
+
 def handle_payment(request, chit_id):
     app_config()
 
@@ -358,11 +369,13 @@ def handle_payment(request, chit_id):
 
     return render(request, 'view_chits.html', {'chit': chit})
 
+
 def payment_summary(request, chit_id):
 
     payments = Payment.objects.filter(chit_id=chit_id).order_by('-payment_id')
 
     return render(request, 'payment_summary.html', {'payments': payments})
+
 
 @admin_only
 def summary_page(request):
@@ -443,12 +456,13 @@ def summary_page(request):
     
     return render(request, 'summary.html', {'summary_data': summary_data})
 
+
 def daily_summary_page(request):
     app_config()
 
     today = date.today()
-    start_date = today - timedelta(days=6)
-    date_range = [start_date + timedelta(days=i) for i in range(7)]
+    start_date = today - timedelta(days=7)
+    date_range = [start_date + timedelta(days=i) for i in range(8)]
 
     chit_types = [k.strip() for k in config_values.keys() if k != "CHIT_TYPE"]
     summary_data = []
@@ -488,6 +502,8 @@ def daily_summary_page(request):
     }
 
     return render(request, 'daily_summary.html', context)
+
+
 @admin_only
 def pending_week(request):
     
@@ -544,6 +560,7 @@ def pending_week(request):
     }
     return render(request, 'unpaid_week.html', context)
 
+
 @admin_only
 def chit_payment_detail(request, chit_id):
 
@@ -572,6 +589,7 @@ def chit_payment_detail(request, chit_id):
         'payment_details': payment_details,
     }
     return render(request, 'payment_week_detail.html', context)
+
 
 @admin_only
 @csrf_exempt
@@ -610,45 +628,59 @@ def send_all_whatsapp_messages(request):
         )
         payment_map = {item['chitnumber']: item['total_paid'] for item in payments_sum}
 
+        already_sent_today_chits = set(
+            WhatsAppMessageLog.objects
+            .filter(sent_time__date=date.today(), status='Sent')
+            .values_list('chit_number', flat=True)
+        )
+
         for person in pending_people:
             chit_number = person.chit_Number
+
+            if chit_number in already_sent_today_chits:
+                print(f"⏭️ Already messaged today for {chit_number}")
+                continue
+
             name = person.name
             phone = person.phoneNumber
+            whatsapp_enabled = person.whatsapp.strip().lower() == 'yes' 
             paid_weeks = payment_map.get(chit_number, 0)
             pending = max(ongoing_week - paid_weeks, 0)
 
             msg = f'''
-                    அன்பார்ந்த மகிழ் வாடிக்கையாளர்களே!
+            அன்பார்ந்த மகிழ் வாடிக்கையாளர்களே!
+            தங்கள் தீபாவளி வாராந்திர சீட்டு எண் மற்றும் பெயர்:
+            சீட்டு எண்: {chit_number}
+            பெயர்: {name}
 
-                    தங்கள் தீபாவளி வாராந்திர சீட்டு எண் மற்றும் பெயர்:
-                    சீட்டு எண்: {chit_number}
-                    பெயர்: {name}
+            இதுவரை செலுத்திய வாரங்கள்: {paid_weeks}
+            மொத்தம் செலுத்த வேண்டிய வாரங்கள்: {ongoing_week}
+            பாக்கி வாரங்கள்: {pending}
 
-                    இதுவரை செலுத்திய வாரங்கள்: {paid_weeks}
-                    மொத்தம் செலுத்த வேண்டிய வாரங்கள்: {ongoing_week}
-                    பாக்கி வாரங்கள்: {pending}
+            தயவுசெய்து உங்கள் பாக்கி தொகையை சீக்கிரம் செலுத்தவும்.
 
-                    தயவுசெய்து உங்கள் பாக்கி தொகையை சீக்கிரம் செலுத்தவும்.
+            நன்றி,
+            அன்புடன்,
+            மகிழ் கஃபே!
+            '''
 
-                    நன்றி,
-                    அன்புடன்,
-                    மகிழ் கஃபே!
-                    '''
-
-            valid_phone = re.fullmatch(r'[6-9]\d{9}', phone)
             status = "Failed"
             error_message = ""
 
-            if valid_phone:
-                try:
-                    kit.sendwhatmsg_instantly(f'+91{phone}', msg, 15, 20)
-                    print(f"✅ Message sent to {chit_number} - {name}")
-                    status = "Sent"
-                except Exception as e:
-                    print(f"❌ Failed to send message to {chit_number} - {name}: {e}")
-                    error_message = str(e)
+            if whatsapp_enabled:
+                valid_phone = re.fullmatch(r'[6-9]\d{9}', phone)
+                if valid_phone:
+                    try:
+                        kit.sendwhatmsg_instantly(f'+91{phone}', msg, 15, 20)
+                        print(f"✅ Message sent to {chit_number} - {name}")
+                        status = "Sent"
+                    except Exception as e:
+                        print(f"❌ Failed to send message to {chit_number} - {name}: {e}")
+                        error_message = str(e)
+                else:
+                    error_message = "Invalid phone number"
             else:
-                error_message = "Invalid phone number"
+                error_message = "WhatsApp not enabled for this chitnumber"
 
             WhatsAppMessageLog.objects.create(
                 chit_number=chit_number,
@@ -656,10 +688,12 @@ def send_all_whatsapp_messages(request):
                 phone_number=phone,
                 message=msg.strip(),
                 status=status,
-                error_message=error_message
+                error_message=error_message,
+                
             )
 
     return redirect('pending_week')
+
 
 @admin_only
 def show_whatsapp_messages(request):
@@ -673,15 +707,13 @@ def show_whatsapp_messages(request):
             file_messages = content.strip().split('--------------------')
             messages.extend([msg.strip() for msg in file_messages if msg.strip()])"""
 
-    db_messages = WhatsAppMessageLog.objects.all().values('message', 'phone_number','sent_time').order_by('sent_time')
+    db_messages = WhatsAppMessageLog.objects.all().values('message', 'phone_number','sent_time','status').order_by('sent_time')
     messages.extend(list(db_messages))
 
     context = {
         'messages': messages
     }
     return render(request, 'show_messages.html', context)
-
-
 
 def daily_view_payment_summary(request):
     today = now().date()
