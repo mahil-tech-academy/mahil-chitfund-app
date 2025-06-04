@@ -197,7 +197,7 @@ def get_chit_number_firsttime():
     chit_type_as_list = AdminConfig.objects.filter(key="CHIT_TYPE").values_list("value", flat=True).first().split(",")
     #print(chit_type_as_list)
     for item in chit_type_as_list:
-        print(item)
+        #print(item)
         prefix = item.split("-")[0]
         chit_type_with_number[item] = prefix+"0000"
     return chit_type_with_number
@@ -215,10 +215,12 @@ def register_chit(request):
     for key in first_time_values.keys():
         if key not in register_values:
             register_values[key] = first_time_values[key]
+            
  
-    register_values = dict(sorted(register_values.items(), key=lambda item: item[1][-3:]))
+    #register_values = dict(sorted(register_values.items(), key=lambda item: item[1][-3:]))
 
-
+    register_values = dict(sorted(register_values.items(), key=lambda item: item[0]))
+    
     chit_type = register_values
 
     if request.method == "POST":
