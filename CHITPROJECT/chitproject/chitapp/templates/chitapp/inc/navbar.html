@@ -1,37 +1,78 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-    <div class="container">
-      <a class="navbar-brand" href="{% url 'index' %}"><i class=""></i> Home </a>
-      
-        <div class="navbar-nav ms-auto">
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sidebar Menu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 250px;
+            background-color: #343a40;
+            padding-top: 20px;
+        }
+        .sidebar a {
+            color: #ffffff;
+            padding: 12px 20px;
+            display: block;
+            text-decoration: none;
+        }
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        .sidebar .user-info {
+            color: #ccc;
+            padding: 10px 20px;
+            border-top: 1px solid #495057;
+        }
+    </style>
+</head>
+<body>
 
-        <a class="nav-link" href="/register_chit/"> Register </a>
-        <a class="nav-link" href="/view_chits/"> View Chits </a>
-        <a class="nav-link" href="/daily_summary/"><i class=""></i>Daily Summary</a>
-        <a class="nav-link" href="/daily_view_payment_summary/"><i class=""></i>Daily Payment</a>
+<div class="sidebar">
+    <a href="{% url 'index' %}"><i class="fas fa-tachometer-alt"></i> Home</a>
+    <a href="/register_chit/"><i class="fas fa-pen-to-square"></i> Register</a>
+    <a href="/view_chits/"><i class="fas fa-folder-open"></i> View Chits</a>
+    <a href="/daily_summary/"><i class="fas fa-calendar-week"></i> Daily Summary</a>
+    <a href="/daily_view_payment_summary/"><i class="fas fa-receipt"></i> Daily Payment</a>
 
+    {% if request.user.is_superuser %}
+        <hr style="border-color: #6c757d;">
+        <a href="/summary_page/"><i class="fas fa-chart-bar"></i> Summary Page</a>
+        <a href="/total_payment_summary/"><i class="fas fa-hand-holding-usd"></i> Total Payment</a>
+        <a href="/pending_week/"><i class="fas fa-hourglass-half"></i> Pending Weeks</a>
+        <a href="/show_messages/"><i class="fas fa-comment-dots"></i> Show Messages</a>
+        <a href="/config_view/"><i class="fas fa-sliders-h"></i> Config View</a>
+        <a href="/make_admin/"><i class="fas fa-user-cog"></i> Make Admin</a>
+        <a href="/remove_admin/"><i class="fas fa-user-lock"></i> Remove Admin</a>
+        <a href="{% url 'register' %}"><i class="fas fa-user-plus"></i> User Register</a>
+    {% endif %}
 
-        {% if request.user.is_superuser %}
-            <a class="nav-link" href="/summary_page/"><i class=""></i> Summary Page</a>
-            <a class="nav-link" href="/total_payment_summary/"><i class=""></i>Total Payment</a>
-            <a class="nav-link" href="/pending_week/"><i class=""></i>Pending Weeks</a>
-            <a class="nav-link" href="/show_messages/"><i class=""></i>Show Messages</a>
-            <a class="nav-link" href="/config_view/"><i class=""></i> Config View</a>
-            <a class="nav-link" href="/make_admin/"><i class=""></i> Admin Access</a>
-            <a class="nav-link" href="/remove_admin/"><i class=""></i>Remove Admin</a>
-            <a class="nav-link" href="{% url 'register' %}"><i class="fa fa-users"></i> User Register </a> 
-        {% endif %}
-
-        {% if request.user.is_authenticated %}
-        <a class="nav-link" aria-current="page" href=""><i class="fa fa-user"></i> {{request.user}}</a>
-        <a class="nav-link" aria-current="page" href="{% url 'logout' %}"><i class="fa fa-sign-out"></i> Logout</a>
-
-        {% else %}
-          <a class="nav-link" href="{% url 'admin_login' %}"><i class="fa fa-sign-in"></i> Admin Login</a>
-  
-        {% endif %}
-
-         
+    <hr style="border-color: #6c757d;">
+    {% if request.user.is_authenticated %}
+        <div class="user-info">
+            <i class="fas fa-user-circle"></i> {{ request.user }}
         </div>
-    </div>
-  </nav>
- 
+        <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    {% else %}
+        <a href="{% url 'admin_login' %}"><i class="fas fa-sign-in-alt"></i> Admin Login</a>
+    {% endif %}
+</div>
+
+<div class="main-content">
+</div>
+
+</body>
+</html>
