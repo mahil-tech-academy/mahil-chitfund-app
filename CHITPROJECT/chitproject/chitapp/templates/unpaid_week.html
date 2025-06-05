@@ -132,7 +132,7 @@
     {% if pending_data %}
         {% for data in pending_data %}
             <tr>
-                <td>{{ forloop.counter }}</td>  <!-- S.No -->
+                <td>{{ forloop.counter }}</td>  
                 <td>{{ data.person.id }}</td>
                 <td>{{ data.person.chit_Type }}</td>
                 <td><a href="{% url 'chit_payment_detail' data.person.id %}">{{ data.person.chit_Number }}</a></td>
