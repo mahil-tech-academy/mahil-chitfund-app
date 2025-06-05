@@ -6,35 +6,17 @@ Chit Fund Project | Registration
 
 {% block content %}
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register Chit Fund</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             background: linear-gradient(135deg, #74ebd5, #acb6e5);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 110vh;
             font-family: Arial, sans-serif; 
-            text-align: center;
+            text-align: left;
             font-size: 18px;
+            
         }
-         nav {
-        background-color: #1e1e1e;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 25px;
-        flex-wrap: nowrap;
-        white-space: nowrap;
-        overflow-x: auto;
-    }
-
         
         .form-container {
             max-width: 600px;
@@ -44,13 +26,15 @@ Chit Fund Project | Registration
             border-radius: 12px;
             margin: auto;
             text-align: left;
+            margin-left: 480px;
         }
         .form-title {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: bold;
             text-align: center;
             color: #333;
             margin-bottom: 20px;
+            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .form-group {   
             font-weight: 300;
@@ -75,6 +59,7 @@ Chit Fund Project | Registration
         .btn-primary:hover {
             background: #0a0a0a;
         }
+
     </style>
 </head>
 <body>
@@ -101,14 +86,18 @@ Chit Fund Project | Registration
                 <form method="POST">
                     {% csrf_token %}
                     
+                    
                     <div class="form-group">
-                        <label for="chit_Type"><strong>Chit Type:</strong></label>
-                        <select name="chit_Type" id="chit_Type" required class="form-control">
-                            <option value="">Select Chit Type</option>
+                        <label><strong>Chit Type:</strong></label>
+                        <div id="chitTypeButtons" class="d-flex flex-wrap gap-2">
                             {% for key, value in chit_type.items %}
-                                <option value="{{ key }}" data-key="{{ value }}">{{ key }}</option>
+                            <button type="button" class="btn btn-outline-dark chit-type-btn" data-key="{{ value }}" data-value="{{ key }}">
+                                {{ key }}
+                            </button>
                             {% endfor %}
-                        </select>
+                        </div>
+                        
+                        <input type="hidden" name="chit_Type" id="chit_Type" required>
                     </div>
 
                     <div class="form-group">
@@ -124,6 +113,15 @@ Chit Fund Project | Registration
                     <div class="form-group">
                         <label for="phoneNumber"><strong>Phone Number:</strong></label>
                         <input type="text" id="phoneNumber" name="phoneNumber" required class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="whatsapp"><strong>Whatsapp Y(or)N:</strong></label>
+                        <select id="text" id="whatsapp" name="whatsapp" required class="form-control">
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
@@ -167,25 +165,31 @@ Chit Fund Project | Registration
         </section>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            let chitTypeField = document.getElementById("chit_Type");
-            let lastDigitsField = document.getElementById("lastDigits");
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const chitTypeButtons = document.querySelectorAll(".chit-type-btn");
+        const hiddenChitTypeInput = document.getElementById("chit_Type");
+        const lastDigitsField = document.getElementById("lastDigits");
 
-            function formatFourDigit(num) {
-                return String(num).padStart(4, '0');
-            }
+        function formatFourDigit(num) {
+            return String(num).padStart(4, '0');
+        }
 
-            function updateChitNumber() {
-                let selectedOption = chitTypeField.options[chitTypeField.selectedIndex];
-                let selectedKey = selectedOption.getAttribute("data-key");
-                lastDigitsField.value = (selectedKey.substring(0, 4) + (formatFourDigit(parseInt(selectedKey.substring(5, 9)) + 1)));
-            }
+        chitTypeButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                chitTypeButtons.forEach(btn => btn.classList.remove("active"));
+                this.classList.add("active");
 
-            chitTypeField.addEventListener("change", updateChitNumber);
-            lastDigitsField.addEventListener("input", updateChitNumber);
+                hiddenChitTypeInput.value = this.getAttribute("data-value");
+
+                const selectedKey = this.getAttribute("data-key");
+                const newNumber = selectedKey.substring(0, 4) + formatFourDigit(parseInt(selectedKey.substring(5, 9)) + 1);
+                lastDigitsField.value = newNumber;
+            });
         });
-    </script>
+    });
+</script>
+
 
 </body>
 </html>
