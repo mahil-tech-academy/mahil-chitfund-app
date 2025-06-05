@@ -11,7 +11,7 @@ class ChitRegistration(models.Model):
     village = models.CharField(max_length=100)
     district = models.CharField(max_length=100)
     num_Of_Chits = models.IntegerField()
-    
+    whatsapp = models.CharField(max_length=15)
     
     def __str__(self):
         return f"{self.chit_Type} - {self.chit_Number}"
@@ -64,7 +64,7 @@ class WhatsAppMessageLog(models.Model):
     phone_number = models.CharField(max_length=15)
     message = models.TextField()
     sent_time = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=10)  
+    status = models.CharField(max_length=10, choices=[('sent', 'Sent'), ('failed', 'Failed')])  
     error_message = models.TextField(blank=True, null=True)
 
     def __str__(self):
@@ -79,4 +79,3 @@ class AdminConfig(models.Model):
     def __str__(self):
         return f"{self.key}: {self.value}"
     
-
