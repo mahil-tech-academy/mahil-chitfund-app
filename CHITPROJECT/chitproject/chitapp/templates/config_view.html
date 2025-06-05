@@ -10,8 +10,8 @@ Chit Fund Project | Config View Page
     body {
         background: linear-gradient(135deg, #74ebd5, #acb6e5);
         font-family: Arial, sans-serif; 
-        padding: 200px;
-        text-align: center;
+        padding: 180px;
+        text-align: left;
         font-size: 18px;
     }
      nav {
@@ -31,12 +31,17 @@ Chit Fund Project | Config View Page
         padding: 30px;
         border-radius: 12px;
         margin: auto;
+        margin-left: 580px;
+
     }
 
     .form-title {
         font-size: 26px;
         font-weight: bold;
         margin-bottom: 20px;
+        text-align: center;
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
     }
 
     table {
@@ -45,7 +50,9 @@ Chit Fund Project | Config View Page
     }
 
     th, td {
-        padding: 10px;  
+        padding: 10px;
+        text-align: center; 
+    vertical-align: middle;
     }
 
     input[type="text"] {
@@ -82,6 +89,10 @@ Chit Fund Project | Config View Page
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
+.button-container {
+    text-align: center;
+    margin-top: 20px;
+}
 
 </style>
 
@@ -106,8 +117,11 @@ Chit Fund Project | Config View Page
             </tr>
             {% endfor %}
         </table>
-        <button type="submit" class="save-button">Save</button>
-        <a href="{% url 'index' %}" class="back-btn">Back</a>
+       <div class="button-container">
+    <button type="submit" class="save-button">Save</button>
+    <a href="{% url 'index' %}" class="back-btn">Back</a>
+</div>
+
     </form>
 </div>
 
