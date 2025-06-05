@@ -10,26 +10,6 @@
         body {
             background: linear-gradient(135deg, #74ebd5, #acb6e5);
             font-family: Arial, sans-serif;
-            padding: 50px 440px;
-            text-align: center;
-            font-size: 18px;
-            margin: 0;
-        }
-
-        nav {
-            background-color: #1e1e1e;
-            display: flex;{% extends 'chitapp/layouts/main.html' %}
-
-{% block content %}
-<!DOCTYPE html>
-<html lang="ta">
-<head>
-    <meta charset="UTF-8">
-    <title>WhatsApp Message History</title>
-    <style>
-        body {
-            background: linear-gradient(135deg, #74ebd5, #acb6e5);
-            font-family: Arial, sans-serif;
             padding: 0px 440px;
             text-align: left;
             font-size: 18px;
@@ -134,94 +114,6 @@
                 <button class="back-button">Back</button>
             </a>
             </div>
-    </div>
-</body>
-</html>
-{% endblock content %}
-
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 25px;
-            flex-wrap: nowrap;
-            white-space: nowrap;
-            overflow-x: auto;
-        }
-
-        .summary-container {
-            max-width: 90%;
-            background: #fff;
-            padding: 30px;
-            border-radius: 12px;
-            margin: 40px auto;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            font-size: 26px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 30px;
-        }
-
-        .msg {
-            background-color: #f9f9f9;
-            padding: 10px;
-            margin: 20px 0;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-            text-align: left;
-            font-size: 16px;
-            border: 1px solid #ddd;
-        }
-
-        .msg p {
-            margin: 8px 0;
-            color: #444;
-        }
-
-        .back-button {
-            display: inline-block;
-            margin-top: 30px;
-            padding: 12px 25px;
-            background-color: #0a0a0a;
-            color: white;
-            font-weight: 600;
-            text-decoration: none;
-        }
-       .sent {
-            background-color: #d4edda; 
-            color: #080808;             
-            padding: 10px;
-            margin: 10px 0;
-            text-align: left;   
-            white-space: pre-line;
-
-        }
-        .failed {
-            background-color: #f8d7da;  
-            color: #0f0f0f;             
-            padding: 10px;
-            margin: 10px 0;
-            text-align: left;
-            white-space: pre-line;  
-        }
-    </style>
-</head>
-<body>
-    <div class="summary-container">
-        <h2>WhatsApp Message History</h2>
-        {% for msg in messages %}
-        <div class="{% if msg.status|lower == 'sent' %}sent{% else %}failed{% endif %}">
-            <strong>To:</strong> {{ msg.phone_number }}
-            <strong>Time:</strong> {{ msg.sent_time }}
-            <strong>Status:</strong>{{msg.status}}<br>
-            <strong>Message:</strong>
-            <div>{{ msg.message }}</div>
-        </div>
-        {% empty %}
-        <p>No messages found.</p>
-        {% endfor %}
-
-        <a href="{% url 'pending_week' %}" class="back-button">Back</a>
     </div>
 </body>
 </html>
