@@ -10,7 +10,7 @@
         body {
             background: linear-gradient(135deg, #74ebd5, #acb6e5);
             font-family: Arial, sans-serif; 
-            padding: 45px 250px;
+            padding: 45px 240px;
             text-align: left;
             font-size: 18px;
         }
@@ -117,36 +117,39 @@
         </div>
 
         <table>
-            <tr>
-                <th>Chit Id</th>
-                <th>Chit Type</th>
-                <th>Chit Number</th>
-                <th>Name</th>
-                <th>Phone Number</th>
-                <th>Total Weeks Now</th>
-                <th>Paid Weeks</th>
-                <th>Pending Weeks</th>
-            </tr>
+    <tr>
+        <th>S.No</th>
+        <th>Chit Id</th>
+        <th>Chit Type</th>
+        <th>Chit Number</th>
+        <th>Name</th>
+        <th>Phone Number</th>
+        <th>Total Weeks Now</th>
+        <th>Paid Weeks</th>
+        <th>Pending Weeks</th>
+    </tr>
 
-            {% if pending_data %}
-                {% for data in pending_data %}
-                    <tr>
-                        <td>{{ data.person.id }}</td>
-                        <td>{{ data.person.chit_Type }}</td>
-                        <td><a href="{% url 'chit_payment_detail' data.person.id %}">{{ data.person.chit_Number }}</a></td>
-                        <td>{{ data.person.name }}</td>
-                        <td>{{ data.person.phoneNumber }}</td>
-                        <td>{{ data.total_weeks_now }}</td>
-                        <td>{{ data.paid_weeks }}</td>
-                        <td>{{ data.pending_weeks }}</td>
-                    </tr>
-                {% endfor %}
-            {% else %}
-                <tr>
-                    <td colspan="8">No pending people under weeks.</td>
-                </tr>
-            {% endif %}
-        </table>
+    {% if pending_data %}
+        {% for data in pending_data %}
+            <tr>
+                <td>{{ forloop.counter }}</td>  <!-- S.No -->
+                <td>{{ data.person.id }}</td>
+                <td>{{ data.person.chit_Type }}</td>
+                <td><a href="{% url 'chit_payment_detail' data.person.id %}">{{ data.person.chit_Number }}</a></td>
+                <td>{{ data.person.name }}</td>
+                <td>{{ data.person.phoneNumber }}</td>
+                <td>{{ data.total_weeks_now }}</td>
+                <td>{{ data.paid_weeks }}</td>
+                <td>{{ data.pending_weeks }}</td>
+            </tr>
+        {% endfor %}
+    {% else %}
+        <tr>
+            <td colspan="9">No pending people under weeks.</td>
+        </tr>
+    {% endif %}
+</table>
+
         <div class="back-container">
     <a href="{% url 'index' %}">
         <button class="back-btn">Back</button>
