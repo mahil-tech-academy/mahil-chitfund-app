@@ -7,11 +7,11 @@ class ChitRegistration(models.Model):
     chit_Number = models.CharField(max_length=20, unique=True,blank=True)
     name = models.CharField(max_length=100)
     phoneNumber = models.CharField(max_length=15)
+    whatsapp = models.CharField(max_length=15,null=True, blank=True)
     address = models.CharField(max_length=255)
     village = models.CharField(max_length=100)
     district = models.CharField(max_length=100)
     num_Of_Chits = models.IntegerField()
-    whatsapp = models.CharField(max_length=15)
     
     def __str__(self):
         return f"{self.chit_Type} - {self.chit_Number}"
