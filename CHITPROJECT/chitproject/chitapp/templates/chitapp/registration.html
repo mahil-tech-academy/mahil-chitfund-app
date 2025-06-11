@@ -1,5 +1,7 @@
 {% extends 'chitapp/layouts/main.html' %}
 
+{% load static %}
+
 {% block title %}
 Chit Fund Project | User Registration
 {% endblock title %}
@@ -9,7 +11,8 @@ Chit Fund Project | User Registration
 
 <style>
     body {
-        background: linear-gradient(135deg, #74ebd5, #acb6e5);
+        --background: linear-gradient(135deg, #74ebd5, #acb6e5);
+        background: url("{% static 'images/mahil-cafe-kalappanaickenpatti-namakkal-coffee-shops-3b4iozhwfg.jpg' %}");
         font-family: Arial, sans-serif; 
         padding: 110px 50px;
         text-align: left;
@@ -32,6 +35,7 @@ Chit Fund Project | User Registration
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
         margin: 0 auto;
         text-align: center;
+        margin-left: 680px;
     }
 
     .form-title {
@@ -40,7 +44,8 @@ Chit Fund Project | User Registration
         margin-bottom: 20px;
         text-align: center;
         font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    
+        color: aliceblue;
+        margin-left: 140px;
     }
 
     label {
