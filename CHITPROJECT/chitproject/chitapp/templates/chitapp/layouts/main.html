@@ -19,8 +19,16 @@
   <body>
 
     {% include 'chitapp/inc/navbar.html' %}
-    {% block content %}
-    {% endblock content %}
+    {% block content %}{% endblock %}
+
+    <script>
+        
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+            });
+            
+    </script>
+</body>
 
     {% block scripts %}
     {% endblock scripts %}
