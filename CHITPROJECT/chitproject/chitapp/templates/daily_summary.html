@@ -1,5 +1,7 @@
 {% extends 'chitapp/layouts/main.html' %}
 
+{% load static %}
+
 {% block title %}
 Chit Fund Project | Daily Summary
 {% endblock title %}
@@ -11,7 +13,8 @@ Chit Fund Project | Daily Summary
     <title>Daily Payment Summary</title>
     <style>
         body {
-            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            --background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            background: url("{% static 'images/mahil-cafe-kalappanaickenpatti-namakkal-coffee-shops-3b4iozhwfg.jpg' %}");
             font-family: Arial, sans-serif;
             padding: 180px 200px;
             text-align: left;
