@@ -31,7 +31,7 @@ def admin_only(view_func):
     return user_passes_test(is_admin_user, login_url='/login/')(view_func)
 
 
-@admin_only
+"""@admin_only
 def remove_admin(request):
     if request.method == "POST":
         username = request.POST.get('username')
@@ -69,7 +69,7 @@ def make_admin(request):
             messages.success(request, f"{user.username} is now an Admin!")
         except User.DoesNotExist:
             messages.error(request, "User does not exist!")
-    return render(request, 'chitapp/make_admin.html')
+    return render(request, 'chitapp/make_admin.html')"""
 
 
 def register(request):
@@ -645,7 +645,7 @@ def send_all_whatsapp_messages(request):
 
             name = person.name
             phone = person.phoneNumber
-            whatsapp_enabled = person.whatsapp.strip().lower() == 'yes' 
+            #whatsapp_enabled = person.whatsapp.strip().lower() == 'yes' 
             paid_weeks = payment_map.get(chit_number, 0)
             pending = max(ongoing_week - paid_weeks, 0)
 
@@ -659,7 +659,7 @@ def send_all_whatsapp_messages(request):
             மொத்தம் செலுத்த வேண்டிய வாரங்கள்: {ongoing_week}
             பாக்கி வாரங்கள்: {pending}
 
-            தயவுசெய்து உங்கள் பாக்கி தொகையை சீக்கிரம் செலுத்தவும்.
+            உங்கள் பாக்கி தொகையை சீக்கிரம் செலுத்தவும்.
 
             நன்றி,
             அன்புடன்,
@@ -669,9 +669,9 @@ def send_all_whatsapp_messages(request):
             status = "Failed"
             error_message = ""
 
-            if whatsapp_enabled:
-                valid_phone = re.fullmatch(r'[6-9]\d{9}', phone)
-                if valid_phone:
+            #if whatsapp_enabled:
+            valid_phone = re.fullmatch(r'[6-9]\d{9}', phone)
+            if valid_phone:
                     try:
                         kit.sendwhatmsg_instantly(f'+91{phone}', msg, 15, 20)
                         print(f"✅ Message sent to {chit_number} - {name}")
@@ -679,10 +679,10 @@ def send_all_whatsapp_messages(request):
                     except Exception as e:
                         print(f"❌ Failed to send message to {chit_number} - {name}: {e}")
                         error_message = str(e)
-                else:
-                    error_message = "Invalid phone number"
             else:
-                error_message = "WhatsApp not enabled for this chitnumber"
+                    error_message = "Invalid phone number"
+            #else:
+                #error_message = "WhatsApp not enabled for this chitnumber"
 
             WhatsAppMessageLog.objects.create(
                 chit_number=chit_number,
@@ -695,7 +695,6 @@ def send_all_whatsapp_messages(request):
             )
 
     return redirect('pending_week')
-
 
 @admin_only
 def show_whatsapp_messages(request):
@@ -781,3 +780,33 @@ def total_payment_summary(request):
         'all_dates': all_dates,
         'selected_date': selected_date,
     })
+
+
+def is_admin_user(user):
+    return user.is_authenticated and user.is_staff
+
+
+def admin_access(request):
+    users = User.objects.all()
+    return render(request, 'chitapp/adminaccess.html', {'users': users})
+
+def update_admin_access(request):
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        action = request.POST.get('action')
+        date_joined=request.POST.get('date_joined')
+
+        user = User.objects.get(id=user_id)
+
+        if action == 'add_staff':
+            user.is_staff = True
+        elif action == 'remove_staff':
+            user.is_staff = False
+        elif action == 'add_superuser':
+            user.is_superuser = True
+        elif action == 'remove_superuser':
+            user.is_superuser = False
+
+        user.save()
+
+    return redirect('admin_access')
