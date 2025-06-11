@@ -12,11 +12,11 @@
         body{
             --background: linear-gradient(135deg, #74ebd5, #acb6e5);
             background: url("{% static 'images/mahil-cafe-kalappanaickenpatti-namakkal-coffee-shops-3b4iozhwfg.jpg' %}");
-            padding: 100px;
+            padding: 350px 680px;
             text-align: center;
         }
          nav {
-        background-color: #1e1e1e;
+        background-color: #0e0d0d;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -27,13 +27,27 @@
     }
     h2{
         text-align: center;
+        color: #161616; 
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7), 0 0 15px #e9cb22; 
+        background-color: #d6f8f2;
+        font-size: 46px;
+    }
+    .form-container{
+        font-weight: bold;
+        color: #fff8f8; 
+        text-shadow:(248, 213, 213)px 2px 8px rgba(0, 0, 0, 0.7), 0 0 15px #e9cb22;
+        font-size: 30px;
+        background-color: #f1faf8;
+        
     }
 
     </style>
 </head>
 <body>
     <h2>Registration Successful!</h2>
-    <a href="/register_chit">Register Another Chit</a>
+     <div class="form-container">
+        <a href="/register_chit">Register Another Chit</a>
+     </div>
 </body>
 </html>
 
