@@ -4,8 +4,8 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('register/', views.register, name='register'),
-    path('make_admin/', views.make_admin, name='make_admin'),
-    path('remove_admin/', views.remove_admin, name='remove_admin'),
+    #path('make_admin/', views.make_admin, name='make_admin'),
+    #path('remove_admin/', views.remove_admin, name='remove_admin'),
     path('admin_login/', views.admin_login, name='admin_login'),
     path('', views.login_view, name='login'),
     path('login/', auth_views.LoginView.as_view(template_name='chitapp/login.html'), name='login'),
@@ -28,4 +28,7 @@ urlpatterns = [
     path('daily_summary/',views.daily_summary_page,name="daily_summary"),
     path('daily_view_payment_summary/', views.daily_view_payment_summary, name='daily_view_payment_summary'),
     path('total_payment_summary/', views.total_payment_summary, name='total_payment_summary'),
+    path('adminaccess/', views.admin_access, name='admin_access'),
+    path('update_admin_access/', views.update_admin_access, name='update_admin_access'),
+
 ]
