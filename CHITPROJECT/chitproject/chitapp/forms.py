@@ -23,7 +23,7 @@ class ChitForm(forms.ModelForm):
 
     class Meta:
         model = ChitRegistration
-        fields = ['chit_Type', 'chit_Number', 'name', 'phoneNumber', 'address', 'village', 'district', 'num_Of_Chits']
+        fields = ['chit_Type', 'chit_Number', 'name', 'phoneNumber', 'address', 'village', 'district', 'num_Of_Chits','whatsapp']
 
     def __init__(self, *args, **kwargs):
         super(ChitForm, self).__init__(*args, **kwargs)
