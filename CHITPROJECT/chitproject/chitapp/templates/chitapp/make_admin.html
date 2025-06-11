@@ -1,6 +1,8 @@
 {% extends 'chitapp/layouts/main.html' %}
 
 
+{% load static %}
+
 {% block title %}
 Chit Fund Project | Admin Access
 {% endblock title %}
@@ -15,7 +17,8 @@ Chit Fund Project | Admin Access
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            --background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            background: url("{% static 'images/mahil-cafe-kalappanaickenpatti-namakkal-coffee-shops-3b4iozhwfg.jpg' %}");
             font-family: Arial, sans-serif;
             padding: 220px;
             text-align: left;
