@@ -1,25 +1,23 @@
 {% extends 'chitapp/layouts/main.html' %}
 
+{% load static %}
+
 {% block title %}
-Chit Fund Project | Admin Config Page
+Chit Fund Project | Config View Page
 {% endblock title %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Config Page</title>
-    <br>
-    <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            padding: 100px; 
-            text-align: left;
-            font-size: 18px;
-        }
-         nav {
+
+<style>
+    body {
+        --background: linear-gradient(135deg, #74ebd5, #acb6e5);
+        background: url("{% static 'images/mahil-cafe-kalappanaickenpatti-namakkal-coffee-shops-3b4iozhwfg.jpg' %}");
+        font-family: Arial, sans-serif; 
+        padding: 180px;
+        text-align: left;
+        font-size: 18px;
+    }
+     nav {
         background-color: #1e1e1e;
         display: flex;
         justify-content: space-between;
@@ -30,76 +28,633 @@ Chit Fund Project | Admin Config Page
         overflow-x: auto;
     }
 
-        .form-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        .buttons {
-            display: flex;
-            justify-content: center;
-            gap: 5px;
-            margin-top: 5px;
-        }
-        .buttons button {
-            padding: 5px 10px;
-            font-size: 14px;
-            cursor: pointer;
-        }
-        input {
-            padding: 5px;
-            font-size: 14px;
-        }
-    </style>
-    <script>
-        function addNewRow() {
-            let container = document.getElementById("form-container");
-            let newDiv = document.createElement("div");
-            newDiv.classList.add("form-row");
-            newDiv.innerHTML = `
-                <label>Key:</label>
-                <input type="text" name="key">
-                <label>Value:</label>
-                <input type="text" name="value">
-            `;
-            container.appendChild(newDiv);
-        }
+    .form-container {
+        position: fixed;
+        max-width: 600px;
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        margin: auto;
+        margin-left: 580px;
 
-        function showPopupMessage(event) {
-            event.preventDefault();
-            alert("Submitted Successfully!");
-            event.target.submit();
-        }
-        
-    </script>
-</head>
-<body>
-    <div class="container">
-        <h2>Admin Config Page</h2>
+    }
 
-        <form method="POST" onsubmit="showPopupMessage(event)">
-            {% csrf_token %}
-            <div id="form-container">
-                {% for config in configs %}
-                <div class="form-row">
-                    <label>Key:</label>
-                    <input type="text" name="key" value="{{ config.key }}" readonly>
-                    <label>Value:</label>
-                    <input type="text" name="value" value="{{ config.value }}" readonly>
-                </div>
-                {% endfor %}
-            </div>
-            <br>
-            <div class="buttons">
-                <button type="button" class="add-btn" onclick="addNewRow()">+</button>
-                <button type="submit" class="submit-btn">Submit</button>
-                <button type="button" class="cancel-btn" onclick="window.location.reload()">Cancel</button>
-            </div>
-        </form>
-    </div>
-</body>
-</html>
+    .form-title {
+        font-size: 26px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        text-align: center;
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
-{% endblock content %}
+    }
+
+    table {
+        width: 100%;
+        margin: 20px 0;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: center; 
+        vertical-align: middle;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 10px ;
+        border: 2px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .save-button {
+        background-color: #0a0a0a;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 5px;
+        transition: 0.3s;
+        display: inline-block;
+    }
+    .back-btn {
+    display: inline-block;
+    width: 15%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #0c0c0c; 
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.button-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+</style>
+
+<div class="form-container">
+    <h2 class="form-title">Config View Page</h2>
+    <form method="post">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <th>Key</th>
+                <th>Value</th>
+            </tr>
+            {% for config in configs %}
+            <tr>
+                <td>
+                    <input type="hidden" name="config_id_{{ config.id }}" value="{{ config.id }}">
+                    <input type="text" name="key_{{ config.id }}" value="{{ config.key }}">
+                </td>
+                <td>
+                    <input type="text" name="value_{{ config.id }}" value="{{ config.value }}">
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+       <div class="button-container">
+    <button type="submit" class="save-button">Save</button>
+    <a href="{% url 'index' %}" class="back-btn">Back</a>
+</div>
+
+    </form>
+</div>
+
+{% endblock %}
+{% extends 'chitapp/layouts/main.html' %}
+
+{% load static %}
+
+{% block title %}
+Chit Fund Project | Config View Page
+{% endblock title %}
+
+{% block content %}
+
+<style>
+    body {
+        --background: linear-gradient(135deg, #74ebd5, #acb6e5);
+        background: url("{% static 'images/mahil-cafe-kalappanaickenpatti-namakkal-coffee-shops-3b4iozhwfg.jpg' %}");
+        font-family: Arial, sans-serif; 
+        padding: 180px;
+        text-align: left;
+        font-size: 18px;
+    }
+     nav {
+        background-color: #1e1e1e;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 25px;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        overflow-x: auto;
+    }
+
+    .form-container {
+        position: fixed;
+        max-width: 600px;
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        margin: auto;
+        margin-left: 580px;
+
+    }
+
+    .form-title {
+        font-size: 26px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        text-align: center;
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+    }
+
+    table {
+        width: 100%;
+        margin: 20px 0;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: center; 
+        vertical-align: middle;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 10px ;
+        border: 2px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .save-button {
+        background-color: #0a0a0a;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 5px;
+        transition: 0.3s;
+        display: inline-block;
+    }
+    .back-btn {
+    display: inline-block;
+    width: 15%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #0c0c0c; 
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.button-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+</style>
+
+<div class="form-container">
+    <h2 class="form-title">Config View Page</h2>
+    <form method="post">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <th>Key</th>
+                <th>Value</th>
+            </tr>
+            {% for config in configs %}
+            <tr>
+                <td>
+                    <input type="hidden" name="config_id_{{ config.id }}" value="{{ config.id }}">
+                    <input type="text" name="key_{{ config.id }}" value="{{ config.key }}">
+                </td>
+                <td>
+                    <input type="text" name="value_{{ config.id }}" value="{{ config.value }}">
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+       <div class="button-container">
+    <button type="submit" class="save-button">Save</button>
+    <a href="{% url 'index' %}" class="back-btn">Back</a>
+</div>
+
+    </form>
+</div>
+
+{% endblock %}
+{% extends 'chitapp/layouts/main.html' %}
+
+{% load static %}
+
+{% block title %}
+Chit Fund Project | Config View Page
+{% endblock title %}
+
+{% block content %}
+
+<style>
+    body {
+        --background: linear-gradient(135deg, #74ebd5, #acb6e5);
+        background: url("{% static 'images/mahil-cafe-kalappanaickenpatti-namakkal-coffee-shops-3b4iozhwfg.jpg' %}");
+        font-family: Arial, sans-serif; 
+        padding: 180px;
+        text-align: left;
+        font-size: 18px;
+    }
+     nav {
+        background-color: #1e1e1e;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 25px;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        overflow-x: auto;
+    }
+
+    .form-container {
+        position: fixed;
+        max-width: 600px;
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        margin: auto;
+        margin-left: 580px;
+
+    }
+
+    .form-title {
+        font-size: 26px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        text-align: center;
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+    }
+
+    table {
+        width: 100%;
+        margin: 20px 0;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: center; 
+        vertical-align: middle;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 10px ;
+        border: 2px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .save-button {
+        background-color: #0a0a0a;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 5px;
+        transition: 0.3s;
+        display: inline-block;
+    }
+    .back-btn {
+    display: inline-block;
+    width: 15%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #0c0c0c; 
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.button-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+</style>
+
+<div class="form-container">
+    <h2 class="form-title">Config View Page</h2>
+    <form method="post">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <th>Key</th>
+                <th>Value</th>
+            </tr>
+            {% for config in configs %}
+            <tr>
+                <td>
+                    <input type="hidden" name="config_id_{{ config.id }}" value="{{ config.id }}">
+                    <input type="text" name="key_{{ config.id }}" value="{{ config.key }}">
+                </td>
+                <td>
+                    <input type="text" name="value_{{ config.id }}" value="{{ config.value }}">
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+       <div class="button-container">
+    <button type="submit" class="save-button">Save</button>
+    <a href="{% url 'index' %}" class="back-btn">Back</a>
+</div>
+
+    </form>
+</div>
+
+{% endblock %}
+{% extends 'chitapp/layouts/main.html' %}
+
+{% load static %}
+
+{% block title %}
+Chit Fund Project | Config View Page
+{% endblock title %}
+
+{% block content %}
+
+<style>
+    body {
+        --background: linear-gradient(135deg, #74ebd5, #acb6e5);
+        background: url("{% static 'images/mahil-cafe-kalappanaickenpatti-namakkal-coffee-shops-3b4iozhwfg.jpg' %}");
+        font-family: Arial, sans-serif; 
+        padding: 180px;
+        text-align: left;
+        font-size: 18px;
+    }
+     nav {
+        background-color: #1e1e1e;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 25px;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        overflow-x: auto;
+    }
+
+    .form-container {
+        position: fixed;
+        max-width: 600px;
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        margin: auto;
+        margin-left: 580px;
+
+    }
+
+    .form-title {
+        font-size: 26px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        text-align: center;
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+    }
+
+    table {
+        width: 100%;
+        margin: 20px 0;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: center; 
+        vertical-align: middle;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 10px ;
+        border: 2px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .save-button {
+        background-color: #0a0a0a;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 5px;
+        transition: 0.3s;
+        display: inline-block;
+    }
+    .back-btn {
+    display: inline-block;
+    width: 15%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #0c0c0c; 
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.button-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+</style>
+
+<div class="form-container">
+    <h2 class="form-title">Config View Page</h2>
+    <form method="post">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <th>Key</th>
+                <th>Value</th>
+            </tr>
+            {% for config in configs %}
+            <tr>
+                <td>
+                    <input type="hidden" name="config_id_{{ config.id }}" value="{{ config.id }}">
+                    <input type="text" name="key_{{ config.id }}" value="{{ config.key }}">
+                </td>
+                <td>
+                    <input type="text" name="value_{{ config.id }}" value="{{ config.value }}">
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+       <div class="button-container">
+    <button type="submit" class="save-button">Save</button>
+    <a href="{% url 'index' %}" class="back-btn">Back</a>
+</div>
+
+    </form>
+</div>
+
+{% endblock %}
+{% extends 'chitapp/layouts/main.html' %}
+
+{% load static %}
+
+{% block title %}
+Chit Fund Project | Config View Page
+{% endblock title %}
+
+{% block content %}
+
+<style>
+    body {
+        --background: linear-gradient(135deg, #74ebd5, #acb6e5);
+        background: url("{% static 'images/mahil-cafe-kalappanaickenpatti-namakkal-coffee-shops-3b4iozhwfg.jpg' %}");
+        font-family: Arial, sans-serif; 
+        padding: 180px;
+        text-align: left;
+        font-size: 18px;
+    }
+     nav {
+        background-color: #1e1e1e;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 25px;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        overflow-x: auto;
+    }
+
+    .form-container {
+        position: fixed;
+        max-width: 600px;
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        margin: auto;
+        margin-left: 580px;
+
+    }
+
+    .form-title {
+        font-size: 26px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        text-align: center;
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+    }
+
+    table {
+        width: 100%;
+        margin: 20px 0;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: center; 
+        vertical-align: middle;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 10px ;
+        border: 2px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .save-button {
+        background-color: #0a0a0a;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 5px;
+        transition: 0.3s;
+        display: inline-block;
+    }
+    .back-btn {
+    display: inline-block;
+    width: 15%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #0c0c0c; 
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.button-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+</style>
+
+<div class="form-container">
+    <h2 class="form-title">Config View Page</h2>
+    <form method="post">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <th>Key</th>
+                <th>Value</th>
+            </tr>
+            {% for config in configs %}
+            <tr>
+                <td>
+                    <input type="hidden" name="config_id_{{ config.id }}" value="{{ config.id }}">
+                    <input type="text" name="key_{{ config.id }}" value="{{ config.key }}">
+                </td>
+                <td>
+                    <input type="text" name="value_{{ config.id }}" value="{{ config.value }}">
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+       <div class="button-container">
+    <button type="submit" class="save-button">Save</button>
+    <a href="{% url 'index' %}" class="back-btn">Back</a>
+</div>
+
+    </form>
+</div>
+
+{% endblock %}
