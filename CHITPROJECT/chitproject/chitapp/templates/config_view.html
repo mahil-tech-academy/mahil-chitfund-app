@@ -1,5 +1,7 @@
 {% extends 'chitapp/layouts/main.html' %}
 
+{% load static %}
+
 {% block title %}
 Chit Fund Project | Config View Page
 {% endblock title %}
@@ -8,7 +10,8 @@ Chit Fund Project | Config View Page
 
 <style>
     body {
-        background: linear-gradient(135deg, #74ebd5, #acb6e5);
+        --background: linear-gradient(135deg, #74ebd5, #acb6e5);
+        background: url("{% static 'images/mahil-cafe-kalappanaickenpatti-namakkal-coffee-shops-3b4iozhwfg.jpg' %}");
         font-family: Arial, sans-serif; 
         padding: 180px;
         text-align: left;
@@ -26,6 +29,7 @@ Chit Fund Project | Config View Page
     }
 
     .form-container {
+        position: fixed;
         max-width: 600px;
         background: #fff;
         padding: 30px;
@@ -52,13 +56,13 @@ Chit Fund Project | Config View Page
     th, td {
         padding: 10px;
         text-align: center; 
-    vertical-align: middle;
+        vertical-align: middle;
     }
 
     input[type="text"] {
         width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
+        padding: 10px ;
+        border: 2px solid #ccc;
         border-radius: 5px;
         font-size: 16px;
     }
