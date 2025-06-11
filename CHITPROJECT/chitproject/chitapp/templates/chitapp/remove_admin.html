@@ -1,5 +1,8 @@
 {% extends 'chitapp/layouts/main.html' %}
 
+
+{% load static %}
+
 {% block title %}
 Chit Fund Project | Remove Admin
 {% endblock title %}
@@ -8,7 +11,8 @@ Chit Fund Project | Remove Admin
 
 <style>
     body {
-        background: linear-gradient(135deg, #74ebd5, #acb6e5);
+        --background: linear-gradient(135deg, #74ebd5, #acb6e5);
+        background: url("{% static 'images/mahil-cafe-kalappanaickenpatti-namakkal-coffee-shops-3b4iozhwfg.jpg' %}");
         font-family: Arial, sans-serif;
         padding: 250px;
         text-align: left;
