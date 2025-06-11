@@ -1,5 +1,7 @@
 {% extends 'chitapp/layouts/main.html' %}
 
+{% load static %}
+
 {% block title %}
 Chit Fund Project
 {% endblock title %}
@@ -9,15 +11,16 @@ Chit Fund Project
 
 <style>
     body {
-        background: linear-gradient(135deg, #74ebd5, #acb6e5);
+        background: url("{% static 'images/mahil-cafe-kalappanaickenpatti-namakkal-coffee-shops-3b4iozhwfg.jpg' %}");
+        --background-size: cover;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        min-height: 80vh;
+        min-height: 100vh;
         margin: 0;
         padding: 0;
-        text-align: left;
+        text-align: center; 
         font-family: Arial, sans-serif;
         font-size: 18px;
     }
@@ -41,14 +44,18 @@ Chit Fund Project
         display: inline-block;
         transition: color 0.3s;
         font-size: 16px;
+        text-align: center;
     }
-
 
     .main-heading {
         font-size: 56px;
         font-weight: bold;
-        color: #1e1e1e;
-        margin-left: 250px;
+        color: #fffcfc; 
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7), 0 0 15px #e9cb22; 
+        padding: 20px 40px;
+        border-radius: 10px;
+        background: rgba(0, 0, 0, 0.4); 
+        margin: 20px auto;
     }
 </style>
 
