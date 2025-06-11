@@ -1,0 +1,149 @@
+{% extends 'chitapp/layouts/main.html' %}
+{% load static %}
+
+{% block title %}Admin Access{% endblock title %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Access</title>
+    <style>
+        body {
+            --background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            background: url("{% static 'images/mahil-cafe-kalappanaickenpatti-namakkal-coffee-shops-3b4iozhwfg.jpg' %}");
+            font-family: Arial, sans-serif;
+            padding: 180px 200px;
+            text-align: left;
+            font-size: 18px;
+        }
+
+        .summary-container {
+            max-width: 85%;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            margin: auto;
+            overflow-x: auto;
+            margin-left: 240px;
+        }
+
+        h2 {
+            font-size: 26px;
+            font-weight: bold;
+            text-align: center;
+            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px auto;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        th {
+            background: #4facfe;
+            color: white;
+        }
+
+        td:nth-child(n+0):nth-last-child(n+1) {
+            background-color: #f0f8ff;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-btn {
+            background-color: #0c0c0c;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="summary-container">
+        <h2>Admin Access Management</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>User Type</th>
+                    <th>Is Staff (Admin)</th>
+                    <th>Is Superuser (Full Admin)</th>
+                    <th>Actions</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+
+                    <td>
+                        {% if user.is_staff %}
+                            <span class="badge bg-success">Admin User</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Normal User</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <input type="checkbox" disabled {% if user.is_staff %}checked{% endif %}>
+                    </td>
+
+                    <td>
+                        <input type="checkbox" disabled {% if user.is_superuser %}checked{% endif %}>
+                    </td>
+
+                    <td>
+                        <form method="post" action="{% url 'update_admin_access' %}" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="user_id" value="{{ user.id }}">
+
+                            {% if user.is_staff %}
+                                <button type="submit" name="action" value="remove_staff" class="btn btn-danger btn-sm">Remove Admin</button>
+                            {% else %}
+                                <button type="submit" name="action" value="add_staff" class="btn btn-primary btn-sm">Make Admin</button>
+                            {% endif %}
+
+                            {% if user.is_superuser %}
+                                <button type="submit" name="action" value="remove_superuser" class="btn btn-warning btn-sm mt-1">Remove Superuser</button>
+                            {% else %}
+                                <button type="submit" name="action" value="add_superuser" class="btn btn-success btn-sm mt-1">Make Superuser</button>
+                            {% endif %}
+
+                        </form>
+                    </td>
+                    <td>{{ user.date_joined }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="btn-container">
+            <a href="{% url 'index' %}"><button class="back-btn">Back</button></a>
+        </div>
+    </div>
+</body>
+</html>
+{% endblock content %}
