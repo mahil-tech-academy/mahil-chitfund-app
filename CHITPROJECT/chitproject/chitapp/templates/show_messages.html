@@ -1,5 +1,7 @@
 {% extends 'chitapp/layouts/main.html' %}
 
+{% load static %}
+
 {% block content %}
 <!DOCTYPE html>
 <html lang="ta">
@@ -8,7 +10,8 @@
     <title>WhatsApp Message History</title>
     <style>
         body {
-            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            --background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            background: url("{% static 'images/mahil-cafe-kalappanaickenpatti-namakkal-coffee-shops-3b4iozhwfg.jpg' %}");
             font-family: Arial, sans-serif;
             padding: 0px 440px;
             text-align: left;
