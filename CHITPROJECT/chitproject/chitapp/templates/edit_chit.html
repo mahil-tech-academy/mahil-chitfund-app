@@ -1,5 +1,7 @@
 {% extends 'chitapp/layouts/main.html' %}
 
+{% load static %}
+
 {% block title %}
 Chit Fund Project | Edit Page
 {% endblock title %}
@@ -8,7 +10,8 @@ Chit Fund Project | Edit Page
 
 <style>
     body {
-        background: linear-gradient(135deg, #74ebd5, #acb6e5);
+        --background: linear-gradient(135deg, #74ebd5, #acb6e5);
+        background: url("{% static 'images/mahil-cafe-kalappanaickenpatti-namakkal-coffee-shops-3b4iozhwfg.jpg' %}");
         font-family: 'Poppins', sans-serif;
         padding: 20px;
         text-align: left;
@@ -101,6 +104,9 @@ Chit Fund Project | Edit Page
 
         <label>Phone Number:</label>
         {{ form.phoneNumber }}
+
+        <label>Whatsapp:</label>
+        {{ form.whatsapp }}
 
         <label>Address:</label>
         {{ form.address }}
