@@ -1,5 +1,7 @@
 {% extends 'chitapp/layouts/main.html' %}
 
+{% load static %}
+
 {% block content %}
 
 <!DOCTYPE html>
@@ -8,12 +10,14 @@
     <title>Pending Chit Members</title>
     <style>
         body {
-            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            --background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            background: url("{% static 'images/mahil-cafe-kalappanaickenpatti-namakkal-coffee-shops-3b4iozhwfg.jpg' %}");
             font-family: Arial, sans-serif; 
             padding: 45px 240px;
             text-align: left;
             font-size: 18px;
         }
+        
 
         .summary-container {
             max-width: 90%;
@@ -132,7 +136,7 @@
     {% if pending_data %}
         {% for data in pending_data %}
             <tr>
-                <td>{{ forloop.counter }}</td>  
+                <td>{{ forloop.counter }}</td>  <!-- S.No -->
                 <td>{{ data.person.id }}</td>
                 <td>{{ data.person.chit_Type }}</td>
                 <td><a href="{% url 'chit_payment_detail' data.person.id %}">{{ data.person.chit_Number }}</a></td>
