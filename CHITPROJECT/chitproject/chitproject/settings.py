@@ -137,3 +137,5 @@ LOGIN_URL = '/login/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #handler403 = 'chitapp.views.custom_permission_denied'
+
+SESSION_COOKIE_DOMAIN = None
