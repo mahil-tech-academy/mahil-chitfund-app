@@ -39,14 +39,15 @@ Chit Fund Project | User Registration
     }
 
     .form-title {
-        font-size: 26px;
-        font-weight: bold;
-        margin-bottom: 20px;
-        text-align: center;
-        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        color: aliceblue;
-        margin-left: 140px;
-    }
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 25px;
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #161616;
+    padding: 12px 20px;
+}
+
 
     label {
         display: block;
@@ -100,11 +101,13 @@ Chit Fund Project | User Registration
     p a:hover {
         text-decoration: underline;
     }
+   
 </style>
 
-<h2 class="form-title">New User Registration</h2>
 
 <div class="form-container">
+    <h2 class="form-title">New User Registration</h2>
+
     <form method="post">
         {% csrf_token %}
         
