@@ -645,7 +645,7 @@ def send_all_whatsapp_messages(request):
 
             name = person.name
             phone = person.phoneNumber
-            #whatsapp_enabled = person.whatsapp.strip().lower() == 'yes' 
+            whatsapp_enabled = person.whatsapp.strip().lower() == 'yes' 
             paid_weeks = payment_map.get(chit_number, 0)
             pending = max(ongoing_week - paid_weeks, 0)
 
@@ -669,8 +669,10 @@ def send_all_whatsapp_messages(request):
             status = "Failed"
             error_message = ""
 
-            #if whatsapp_enabled:
-            valid_phone = re.fullmatch(r'[6-9]\d{9}', phone)
+            if whatsapp_enabled:
+                valid_phone = re.fullmatch(r'[6-9]\d{9}', phone)
+            else:
+                error_message = "WhatsApp not enabled for this chitnumber"
             if valid_phone:
                     try:
                         kit.sendwhatmsg_instantly(f'+91{phone}', msg, 15, 20)
@@ -680,9 +682,8 @@ def send_all_whatsapp_messages(request):
                         print(f"❌ Failed to send message to {chit_number} - {name}: {e}")
                         error_message = str(e)
             else:
-                    error_message = "Invalid phone number"
-            #else:
-                #error_message = "WhatsApp not enabled for this chitnumber"
+                error_message = "Invalid phone number"
+            
 
             WhatsAppMessageLog.objects.create(
                 chit_number=chit_number,
